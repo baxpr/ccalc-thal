@@ -1,0 +1,12 @@
+*~
+local*
+INPUTS*
+OUTPUTS*
+error.log
+freesurfer_license.txt
+*.simg
+*.sif
+.Rhistory
+*.asv
+external
+.DS_Store
