@@ -30,6 +30,10 @@ while [[ $# -gt 0 ]]; do
     esac
 done
 
+# Copy and unzip images
+
+# 
+
 
 # Most of the work is done in matlab
 run_spm12.sh ${MATLAB_RUNTIME} function conncalc \

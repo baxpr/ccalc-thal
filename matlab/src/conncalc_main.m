@@ -10,7 +10,7 @@ F = prep_files(inp);
 % SPM init
 spm_jobman('initcfg');
 
-% Resample ROI image to fMRI space
+% Resample ROI images to fMRI space
 disp('ROI operations   ------------------------------------------------------------------')
 [rroi_nii,rroi_csv] = resample_roi(F.roi_nii,F.roidefinv_nii,F.meanfmri_nii,F.roi_csv,inp.out_dir);
 

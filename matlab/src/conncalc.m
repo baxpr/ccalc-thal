@@ -1,47 +1,27 @@
 function conncalc(varargin)
+% Thalamus specific ROI sets and connectivity computation
 
 
 %% Parse inputs
 P = inputParser;
 
-% ROI file. Two options:
-%
-%   (1) Filename with no path, e.g. 'ABHHIP_LR.nii.gz'. In this case the
-%       file is assumed to exist in the container with a matching label file
-%       present e.g. 'ABHHIP_LR-label.nii.gz'. Available options:
-%
-%       asdr-labels.nii.gz
-%       ABHHIP_LR-labels.nii.gz
-%       Yeo2011_7Networks_MNI152_FreeSurferConformed1mm_LiberalMask-labels.nii.gz
-%       BNST_LR-labels.nii.gz
-%       AABHHIP_LR-labels.nii.gz
-%
-%   (2) Filename with path. In this case the file is provided as input and
-%       the roilabel_csv must also be provided with ROI labels.
-addOptional(P,'roi_niigz','Yeo2011_7Networks_MNI152_FreeSurferConformed1mm_LiberalMask-labels.nii.gz')
-addOptional(P,'roilabel_csv','')
-
 % Preprocessed fMRI, outputs from connprep. Same space as the ROI image.
 addOptional(P,'removegm_niigz','');
 addOptional(P,'keepgm_niigz','');
 addOptional(P,'meanfmri_niigz','');
+addOptional(P,'wremovegm_niigz','');
+addOptional(P,'wkeepgm_niigz','');
+addOptional(P,'wmeanfmri_niigz','');
 
-% Optionally, supply a warp that will be used to resample the ROI image
-% from atlas to native space before signal extraction. Use with native
-% space fMRI and atlas space ROI image.
-addOptional(P,'roidefinv_niigz','none');
+% THOMAS native space ROI image
+addOptional(P,'thomas_niigz','');
 
-% T1, e.g. bias corrected T1 from cat12
+% T1, e.g. bias corrected T1 from cat12 (native space and atlas space)
 addOptional(P,'t1_niigz','');
-
-% Brain mask to avoid storing an entire volume of junk
-addOptional(P,'mask_niigz','none');
+addOptional(P,'wt1_niigz','');
 
 % Smoothing to apply to connectivity maps
-addOptional(P,'fwhm','8');
-
-% Output connectivity maps or no?
-addOptional(P,'connmaps_out','yes')
+addOptional(P,'fwhm','4');
 
 % Subject info if on XNAT
 addOptional(P,'label_info','');
