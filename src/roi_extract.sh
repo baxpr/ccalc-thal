@@ -39,6 +39,9 @@ for gm in keepgm removegm; do
     fslmeants -i thomas_right_${gm} -o thomas_right_${gm}.txt --label="${thomas_right}"/thomasr
 done
 
+# Convert to CSV and label appropriately
+thomas_to_csv.py
+
 
 ## Schaefer cortical ROIs (MNI space)
 
