@@ -7,7 +7,6 @@ import pandas
 # Read THOMAS time series into CSV and add labels
 hs=['left','right']
 for h in range(0, len(hs)):
-    print(hs[h])
     ts = pandas.read_csv(f'thomas_{hs[h]}_removegm.txt', delim_whitespace=True, 
         usecols=[1,3,4,5,6,7,8,9,10,11,12,13],
         names=[
@@ -30,8 +29,8 @@ for h in range(0, len(hs)):
     if h==0:
         data = ts
     else:
-        data = pandas.concat([data, ts])
+        data = pandas.concat([data, ts], axis=1)
 
 
 # Write to csv
-data.to_csv('thomas_removegm.csv')
+data.to_csv('thomas_removegm.csv', index=False)

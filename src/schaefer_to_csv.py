@@ -10,4 +10,4 @@ data = pandas.read_csv(f'schaefer_removegm.txt', delim_whitespace=True,
         )
 
 # Write to csv
-data.to_csv('schaefer_removegm.csv')
+data.to_csv('schaefer_removegm.csv', index=False)
