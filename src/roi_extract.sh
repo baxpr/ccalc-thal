@@ -22,6 +22,7 @@ cd "${out_dir}"
 ## THOMAS ROIs (native space)
 
 # Resample fMRI to THOMAS ROI space
+echo THOMAS resample
 for gm in keepgm removegm; do
     flirt -usesqform -applyxfm \
         -in filtered_${gm}_noscrub_nadfmri \
@@ -34,12 +35,14 @@ for gm in keepgm removegm; do
 done
 
 # Extract signals
+echo THOMAS extract
 for gm in keepgm removegm; do
     fslmeants -i thomas_left_${gm} -o thomas_left_${gm}.txt --label="${thomas_left}"/thomas
     fslmeants -i thomas_right_${gm} -o thomas_right_${gm}.txt --label="${thomas_right}"/thomasr
 done
 
 # Convert to CSV and label appropriately
+echo THOMAS reformat
 thomas_to_csv.py
 
 
@@ -48,6 +51,7 @@ thomas_to_csv.py
 roi_img="${roi_dir}"/Schaefer2018/Schaefer2018_400Parcels_7Networks_order_FSLMNI152_2mm
 
 # Resample fMRI to ROI space
+echo Schaefer resample
 for gm in keepgm removegm; do
     flirt -usesqform -applyxfm \
         -in filtered_${gm}_noscrub_nadfmri \
@@ -56,11 +60,13 @@ for gm in keepgm removegm; do
 done
 
 # Extract signals
+echo Schaefer extract
 for gm in keepgm removegm; do
     fslmeants -i schaefer_${gm} -o schaefer_${gm}.txt --label="${roi_img}"
 done
 
 # Convert to CSV and label appropriately
+echo Schaefer reformat
 schaefer_to_csv.py
 
 
