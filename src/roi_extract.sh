@@ -45,6 +45,10 @@ thomas_to_csv.py
 
 ## Schaefer cortical ROIs (MNI space)
 
+# Resample ROI image to fMRI space
+flirt -useqform -applyxfm \
+    -in ${roi_dir}/
+
 
 ## Yeo thalamus ROIs (MNI space)
 

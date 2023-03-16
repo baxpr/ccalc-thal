@@ -1,8 +1,8 @@
 #!/usr/bin/env python
+#
+# Read FSL .txt timeseries
 
 import pandas
-
-# Read FSL .txt timeseries
 
 # Read THOMAS time series into CSV and add labels
 hs=['left','right']
