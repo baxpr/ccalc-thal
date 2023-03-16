@@ -33,4 +33,4 @@ for h in range(0, len(hs)):
 
 
 # Write to csv
-
+data.to_csv('thomas_removegm.csv')

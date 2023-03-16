@@ -45,11 +45,25 @@ thomas_to_csv.py
 
 ## Schaefer cortical ROIs (MNI space)
 
-# Resample ROI image to fMRI space
-flirt -useqform -applyxfm \
-    -in ${roi_dir}/
+roi_img="${roi_dir}"/Schaefer2018/Schaefer2018_400Parcels_7Networks_order_FSLMNI152_2mm
+
+# Resample fMRI to ROI space
+for gm in keepgm removegm; do
+    flirt -usesqform -applyxfm \
+        -in filtered_${gm}_noscrub_nadfmri \
+        -ref "${roi_img}" \
+        -out schaefer_${gm}
+done
+
+# Extract signals
+for gm in keepgm removegm; do
+    fslmeants -i schaefer_${gm} -o schaefer_${gm}.txt --label="${roi_img}"
+done
+
+# Convert to CSV and label appropriately
+schaefer_to_csv.py
+
 
 
 ## Yeo thalamus ROIs (MNI space)
-
 
