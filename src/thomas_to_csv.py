@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 #
-# Read FSL .txt timeseries
+# Read FSL .txt timeseries and convert to csv
 
 import pandas
 

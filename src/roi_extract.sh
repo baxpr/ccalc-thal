@@ -73,3 +73,23 @@ schaefer_to_csv.py
 
 ## Yeo thalamus ROIs (MNI space)
 
+roi_img="${roi_dir}"/Yeo-thalamus/1000subjects_TightThalamus_clusters007_ref
+
+# Resample fMRI to ROI space
+echo Yeo resample
+for gm in keepgm removegm; do
+    flirt -usesqform -applyxfm \
+        -in filtered_${gm}_noscrub_nadfmri \
+        -ref "${roi_img}" \
+        -out yeo_${gm}
+done
+
+# Extract signals
+echo Yeo extract
+for gm in keepgm removegm; do
+    fslmeants -i yeo_${gm} -o yeo_${gm}.txt --label="${roi_img}"
+done
+
+# Convert to CSV and label appropriately
+echo Yeo reformat
+yeo_to_csv.py
