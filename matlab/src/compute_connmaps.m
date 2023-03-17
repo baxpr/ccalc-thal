@@ -1,4 +1,4 @@
-function compute_connmap(roi_csv,fmri_nii,mask_nii,connmap_dir)
+function compute_connmaps(roi_csv,fmri_nii,mask_nii,connmap_dir)
 
 % Load ROI signals
 roi_data = readtable(roi_csv);
@@ -11,30 +11,31 @@ rYfmri = reshape(Yfmri,[],osize(4))';
 
 % Load mask
 Vmask = spm_vol(mask_nii);
-spm_check_orientation([Vfmri,Vmask]);
+spm_check_orientations([Vfmri;Vmask]);
 Ymask = spm_read_vols(Vmask);
 
 % Which voxels to compute for?
 keeps = Ymask(:)>0;
 
-% Compute connectivity maps
-Rmap = zeros(size(Ymask));
-Zmap = zeros(size(Ymask));
-Rmap(keeps) = corr(table2array(roi_data),rYfmri(:,keeps));
-Zmap(keeps) = atanh(Rmap(keeps)) * sqrt(size(roi_data,1)-3);
+% Compute connectivity maps FIXME handle multiple ROIs at once in Rmap
+Rmap = zeros(size(roi_data,2),size(Ymask(:),1));
+Zmap = zeros(size(roi_data,2),size(Ymask(:),1));
+Rmap(:,keeps) = corr(table2array(roi_data),rYfmri(:,keeps));
+Zmap(:,keeps) = atanh(Rmap(:,keeps)) * sqrt(size(roi_data,1)-3);
 
 % Save maps to file, original and smoothed versions
+[~,tag] = fileparts(roi_csv);
 for r = 1:width(roi_data)
 
 	Vout = rmfield(Vfmri(1),'pinfo');
 	Vout.fname = fullfile(connmap_dir, ...
-		['R_' roidata.Properties.VariableNames{r} '_' tag '.nii']);
+		['R_' tag '_' roi_data.Properties.VariableNames{r} '.nii']);
 	Yout = reshape(Rmap(r,:),osize(1:3));
 	spm_write_vol(Vout,Yout);
 
     Vout = rmfield(Vfmri(1),'pinfo');
 	Vout.fname = fullfile(connmap_dir, ...
-		['Z_' roidata.Properties.VariableNames{r} '_' tag '.nii']);
+		['Z_' tag '_' roi_data.Properties.VariableNames{r} '.nii']);
 	Yout = reshape(Zmap(r,:),osize(1:3));
 	spm_write_vol(Vout,Yout);
 	
