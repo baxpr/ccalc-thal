@@ -25,11 +25,11 @@ cd "${out_dir}"
 echo THOMAS resample
 for gm in keepgm removegm; do
     flirt -usesqform -applyxfm \
-        -in filtered_${gm}_noscrub_nadfmri \
+        -in fmri_${gm} \
         -ref "${thomas_left}"/crop_t1 \
         -out thomas_left_${gm}
     flirt -usesqform -applyxfm \
-        -in filtered_${gm}_noscrub_nadfmri \
+        -in fmri_${gm} \
         -ref "${thomas_right}"/crop_t1 \
         -out thomas_right_${gm}
 done
@@ -54,7 +54,7 @@ roi_img="${roi_dir}"/Schaefer2018/Schaefer2018_400Parcels_7Networks_order_FSLMNI
 echo Schaefer resample
 for gm in keepgm removegm; do
     flirt -usesqform -applyxfm \
-        -in filtered_${gm}_noscrub_nadfmri \
+        -in wfmri_${gm} \
         -ref "${roi_img}" \
         -out schaefer_${gm}
 done
@@ -79,7 +79,7 @@ roi_img="${roi_dir}"/Yeo-thalamus/1000subjects_TightThalamus_clusters007_ref
 echo Yeo resample
 for gm in keepgm removegm; do
     flirt -usesqform -applyxfm \
-        -in filtered_${gm}_noscrub_nadfmri \
+        -in wfmri_${gm} \
         -ref "${roi_img}" \
         -out yeo_${gm}
 done
