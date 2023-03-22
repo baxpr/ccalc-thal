@@ -36,9 +36,17 @@ cp "${wfmri_keepgm_niigz}" "${out_dir}"/wfmri_keepgm.nii.gz
 cp "${fmri_removegm_niigz}" "${out_dir}"/fmri_removegm.nii.gz
 cp "${wfmri_removegm_niigz}" "${out_dir}"/wfmri_removegm.nii.gz
 
+# Grab whole-thalamus mask and resample to wfmri geometry
+flirt -usesqform -applyxfm \
+    -in "${roi_dir}"/thalamus-mask/thalamus-mask \
+    -ref "${out_dir}"/wfmri_keepgm \
+    -out "${out_dir}"/thalamus-mask
+
 # ROI time series extraction
 roi_extract.sh
 
+# Unzip image files for SPM
+gunzip "${out_dir}"/*.nii.gz
 
 
 
