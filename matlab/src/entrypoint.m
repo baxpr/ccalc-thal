@@ -8,14 +8,19 @@ addOptional(P,'wfmri_nii','/OUTPUTS/wfmri.nii')
 addOptional(P,'mask_nii','/OUTPUTS/thalamus-mask.nii')
 addOptional(P,'out_dir','/OUTPUTS')
 parse(P,varargin{:});
-
+inp = P.Results;
 
 % Matrix, Schaefer 400 x THOMAS 12
-compute_connmat(schaefer_csv,thomas_csv,'schaefer400_thomas12');
+disp('Connectivity matrix 1')
+compute_connmat(inp.schaefer_csv,inp.thomas_csv, ...
+    inp.out_dir,'schaefer400_thomas12');
 
 % Matrix, Schaefer 400 x Yeo 7
-compute_connmat(schaefer_csv,yeo_csv,'schaefer400_yeo7');
+disp('Connectivity matrix 2')
+compute_connmat(inp.schaefer_csv,inp.yeo_csv, ...
+    inp.out_dir,'schaefer400_yeo7');
 
 % Maps, Schaefer 400. Only within mask of dilated Yeo7 whole thalamus
-compute_connmaps(schaefer_csv,wfmri_nii,mask_nii, ...
-    fullfile(out_dir,'connmaps_schaefer400'));
+disp('Connectivity maps')
+compute_connmaps(inp.schaefer_csv,inp.wfmri_nii,inp.mask_nii, ...
+    fullfile(inp.out_dir,'connmaps_schaefer400'));

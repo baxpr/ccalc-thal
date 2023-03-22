@@ -24,6 +24,9 @@ Rmap(:,keeps) = corr(table2array(roi_data),rYfmri(:,keeps));
 Zmap(:,keeps) = atanh(Rmap(:,keeps)) * sqrt(size(roi_data,1)-3);
 
 % Save maps to file, original and smoothed versions
+if ~exist(connmap_dir,'dir')
+    mkdir(connmap_dir);
+end
 [~,tag] = fileparts(roi_csv);
 for r = 1:width(roi_data)
 
