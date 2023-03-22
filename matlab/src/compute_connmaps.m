@@ -17,7 +17,7 @@ Ymask = spm_read_vols(Vmask);
 % Which voxels to compute for?
 keeps = Ymask(:)>0;
 
-% Compute connectivity maps FIXME handle multiple ROIs at once in Rmap
+% Compute connectivity maps
 Rmap = zeros(size(roi_data,2),size(Ymask(:),1));
 Zmap = zeros(size(roi_data,2),size(Ymask(:),1));
 Rmap(:,keeps) = corr(table2array(roi_data),rYfmri(:,keeps));
