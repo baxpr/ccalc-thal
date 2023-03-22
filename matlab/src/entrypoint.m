@@ -6,6 +6,7 @@ addOptional(P,'thomas_csv','/OUTPUTS/thomas.csv')
 addOptional(P,'yeo_csv','/OUTPUTS/yeo.csv')
 addOptional(P,'wfmri_nii','/OUTPUTS/wfmri.nii')
 addOptional(P,'mask_nii','/OUTPUTS/thalamus-mask.nii')
+addOptional(P,'roi_dir','/opt/ccalc-thal/rois')
 addOptional(P,'out_dir','/OUTPUTS')
 parse(P,varargin{:});
 inp = P.Results;
