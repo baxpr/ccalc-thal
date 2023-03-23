@@ -1,4 +1,4 @@
-function PC = participation_coeff(K,roi_dir,out_dir)
+function PC = participation_coeff(K,roi_dir)
 % Participation coefficient
 %
 % Hwang K, Bertolero MA, Liu WB, D'Esposito M. The Human Thalamus Is an
@@ -23,6 +23,7 @@ function PC = participation_coeff(K,roi_dir,out_dir)
 roimap = readtable(fullfile(roi_dir,'Schaefer2018', ...
     'Schaefer2018_400Parcels_7Networks_order_FSLMNI152_2mm.Centroid_RAS.csv'), ...
     'Format','%d%q%f%f%f');
+
 for h = 1:height(roimap)
     roimap.TextLabel{h,1} = sprintf('schaefer_%03d',roimap.ROILabel(h));
     q = strsplit(roimap.ROIName{h},'_');
