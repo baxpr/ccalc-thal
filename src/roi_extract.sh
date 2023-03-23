@@ -6,7 +6,7 @@
 #   thomas.nii.gz
 #
 # MNI space:
-#   Schaefer2018_400Parcels_7Networks_order_FSLMNI152_1mm.nii.gz
+#   Schaefer2018_400Parcels_7Networks_order_FSLMNI152_2mm.nii.gz
 #   1000subjects_TightThalamus_clusters007_ref.nii.gz
 #
 # Filtered data e.g.:

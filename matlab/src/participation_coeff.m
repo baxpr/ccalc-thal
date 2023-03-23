@@ -1,7 +1,5 @@
 function PC = participation_coeff(K,roi_dir)
-% Participation coefficient. K must be the preprocessed (thresholded,
-% binarized, etc) connectivity matrix / graph. Edge weights must be
-% non-negative.
+% Participation coefficient.
 %
 % Hwang K, Bertolero MA, Liu WB, D'Esposito M. The Human Thalamus Is an
 % Integrative Hub for Functional Brain Networks. J Neurosci. 2017 Jun
@@ -13,6 +11,9 @@ function PC = participation_coeff(K,roi_dir)
 % We have 400 cortical ROIs from Schaefer, each assigned to one of the 7
 % Yeo networks.
 %
+% "Cortical ROIs" are assumed to be the Schaefer 400 set on the rows (400
+% row matrix required to match the ROI info file).
+%
 % Yeo7 ROIs with labels from Schaefer CSV:
 %   1 - Visual            (Vis)
 %   2 - Somatomotor       (SomMot)
@@ -21,6 +22,11 @@ function PC = participation_coeff(K,roi_dir)
 %   5 - Limbic            (Limbic)
 %   6 - Frontoparietal    (Cont)
 %   7 - Default           (Default)
+%
+% K must be the preprocessed (thresholded, binarized, etc) connectivity
+% matrix / graph. Edge weights must be non-negative. If square, i.e. the
+% Schaefer 400 set is on the columns also, the diagonal should be zeroed to
+% avoid affecting the computation with self-correlations.
 
 roimap = readtable(fullfile(roi_dir,'Schaefer2018', ...
     'Schaefer2018_400Parcels_7Networks_order_FSLMNI152_2mm.Centroid_RAS.csv'), ...
@@ -39,15 +45,10 @@ nnw = numel(networks);
 % sets). s indexes cortical networks (Yeo7). Our connectivity matrix is 400
 % rows of cortical ROIs x 1..i cols of thalamus regions. Rescale based on
 % number of networks so that max value of PC is 1.
-%
-% Threshold needed:
-% K = readtable('../../OUTPUTS/R_schaefer400_thomas12.csv','ReadRowNames',true);
-% table2array(K).*table2array(K)>0.05
 PC = ones(1,size(K,2));
 for s = 1:nnw
     PC = PC - ( sum(K .* strcmp(roimap.Network,networks{s})) ./ sum(K) ) .^ 2;
 end
 maxPC = 1 - (1/nnw)^2*nnw;
 PC = PC ./ maxPC;
-
 
