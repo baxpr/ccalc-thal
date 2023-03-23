@@ -11,6 +11,11 @@ addOptional(P,'out_dir','/OUTPUTS')
 parse(P,varargin{:});
 inp = P.Results;
 
+% Matrix, Schaefer 400 x Schaefer 400
+disp('Connectivity matrix 1')
+compute_connmat(inp.schaefer_csv,inp.schaefer_csv, ...
+    inp.out_dir,'schaefer400_schaefer400');
+
 % Matrix, Schaefer 400 x THOMAS 12
 disp('Connectivity matrix 1')
 compute_connmat(inp.schaefer_csv,inp.thomas_csv, ...

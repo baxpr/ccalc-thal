@@ -1,5 +1,7 @@
 function PC = participation_coeff(K,roi_dir)
-% Participation coefficient
+% Participation coefficient. K must be the preprocessed (thresholded,
+% binarized, etc) connectivity matrix / graph. Edge weights must be
+% non-negative.
 %
 % Hwang K, Bertolero MA, Liu WB, D'Esposito M. The Human Thalamus Is an
 % Integrative Hub for Functional Brain Networks. J Neurosci. 2017 Jun
