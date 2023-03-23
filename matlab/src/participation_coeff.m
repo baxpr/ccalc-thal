@@ -33,5 +33,10 @@ end
 % But verify visually vs the cortical network maps in the numerically
 % indexed nifti at
 % https://github.com/ThomasYeoLab/CBIG/tree/master/stable_projects/brain_parcellation/Yeo2011_fcMRI_clustering
+%
+% ... ACTUALLY we don't need to match between the two ROI sets. We only
+% need to know what network each of the Schaefer 400 cortical ROIs is in,
+% and we only need the Schaefer csv to determine that (using Yeo7 networks
+% only).
 
 
