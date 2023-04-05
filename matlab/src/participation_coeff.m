@@ -28,6 +28,12 @@ function PC = participation_coeff(K,roi_dir)
 % Schaefer 400 set is on the columns also, the diagonal should be zeroed to
 % avoid affecting the computation with self-correlations.
 
+% Verify K has 400 rows
+if size(K,1)~=400
+    error('Not 400 rows in K')
+end
+
+% Get network names, assuming Schaefer400 ROI set and Yeo7 networks
 roimap = readtable(fullfile(roi_dir,'Schaefer2018', ...
     'Schaefer2018_400Parcels_7Networks_order_FSLMNI152_2mm.Centroid_RAS.csv'), ...
     'Format','%d%q%f%f%f');
