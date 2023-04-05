@@ -1,4 +1,4 @@
-function compute_connmat(roi_csv1,roi_csv2,out_dir,out_basename)
+function R = compute_connmat(roi_csv1,roi_csv2,out_dir,out_basename)
 
 roi_data1 = readtable(roi_csv1);
 roi_data2 = readtable(roi_csv2);

@@ -13,22 +13,22 @@ inp = P.Results;
 
 % Matrix, Schaefer 400 x Schaefer 400
 disp('Connectivity matrix 1')
-compute_connmat(inp.schaefer_csv,inp.schaefer_csv, ...
+R1 = compute_connmat(inp.schaefer_csv,inp.schaefer_csv, ...
     inp.out_dir,'schaefer400_schaefer400');
 
 % Matrix, Schaefer 400 x THOMAS 12
 disp('Connectivity matrix 2')
-compute_connmat(inp.schaefer_csv,inp.thomas_csv, ...
+R2 = compute_connmat(inp.schaefer_csv,inp.thomas_csv, ...
     inp.out_dir,'schaefer400_thomas12');
 
 % Matrix, Schaefer 400 x Yeo 7
 disp('Connectivity matrix 3')
-compute_connmat(inp.schaefer_csv,inp.yeo_csv, ...
+R3 = compute_connmat(inp.schaefer_csv,inp.yeo_csv, ...
     inp.out_dir,'schaefer400_yeo7');
 
 % Maps, Schaefer 400. Only within mask of dilated Yeo7 whole thalamus
 disp('Connectivity maps')
-compute_connmaps(inp.schaefer_csv,inp.wfmri_nii,inp.mask_nii, ...
+R4 = compute_connmaps(inp.schaefer_csv,inp.wfmri_nii,inp.mask_nii, ...
     fullfile(inp.out_dir,'connmaps_schaefer400'));
 
 % Participation coefficient. Compute for Thomas/Yeo/voxel thalamus

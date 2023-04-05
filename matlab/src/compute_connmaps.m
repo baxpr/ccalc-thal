@@ -1,4 +1,4 @@
-function compute_connmaps(roi_csv,fmri_nii,mask_nii,connmap_dir)
+function R = compute_connmaps(roi_csv,fmri_nii,mask_nii,connmap_dir)
 
 % Load ROI signals
 roi_data = readtable(roi_csv);
@@ -47,3 +47,7 @@ for r = 1:width(roi_data)
 %	spm_smooth(Vout,sfname,str2double(fwhm));
 	
 end
+
+% Return in ROI x voxel matrix format
+R = Rmap(:,keeps);
+
