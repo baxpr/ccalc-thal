@@ -68,7 +68,7 @@ schaefer_to_csv.py
 #roi_img="${roi_dir}"/Yeo-thalamus/1000subjects_TightThalamus_clusters007_ref
 
 # Hemispheres split
-roi_img="${roi_dir}"/thalamus-mask/Yeo7_thalamus_LR
+roi_img="${roi_dir}"/thalamus-mask/yeo7_thalamus_lr
 
 # Resample fMRI to ROI space
 echo Yeo resample
@@ -83,4 +83,4 @@ fslmeants -i yeo -o yeo.txt --label="${roi_img}"
 
 # Convert to CSV and label appropriately
 echo Yeo reformat
-yeo_to_csv.py
+yeo_to_csv.py "${roi_img}"-labels.csv
