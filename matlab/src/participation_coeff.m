@@ -22,10 +22,9 @@ end
 networks = unique(Network);
 nnw = numel(networks);
 
-% Hwang 2017 eqn for PC. i indexes thalamus regions (THOMAS, Yeo, or voxel
-% sets). s indexes cortical networks (Yeo7). Our connectivity matrix is 400
-% rows of cortical ROIs x 1..i cols of thalamus regions. Rescale based on
-% number of networks so that max value of PC is 1.
+% Hwang 2017 eqn for PC. i indexes target regions (e.g. THOMAS, Yeo, or
+% voxel sets; cols of K). s indexes cortical networks (e.g. Yeo7; rows of
+% K). Rescale based on number of networks so that max value of PC is 1.
 PC = ones(1,size(K,2));
 for s = 1:nnw
     PC = PC - ( sum(K .* strcmp(Network,networks{s})) ./ sum(K) ) .^ 2;
