@@ -12,6 +12,15 @@ parse(P,varargin{:});
 inp = P.Results;
 
 % Get Yeo7 network names for Schaefer400 ROI set
+%
+% Yeo7 ROIs with labels from Schaefer CSV:
+%   1 - Visual            (Vis)
+%   2 - Somatomotor       (SomMot)
+%   3 - Dorsal Attention  (DorsAttn)
+%   4 - Ventral Attention (SalVentAttn)
+%   5 - Limbic            (Limbic)
+%   6 - Frontoparietal    (Cont)
+%   7 - Default           (Default)
 netmap = readtable(fullfile(inp.roi_dir,'Schaefer2018', ...
     'Schaefer2018_400Parcels_7Networks_order_FSLMNI152_2mm.Centroid_RAS.csv'), ...
     'Format','%d%q%f%f%f');
