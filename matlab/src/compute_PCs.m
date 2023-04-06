@@ -16,13 +16,3 @@ function compute_PCs
 %   7 - Default           (Default)
 %
 
-% Get network names, assuming Schaefer400 ROI set and Yeo7 networks
-roimap = readtable(fullfile(roi_dir,'Schaefer2018', ...
-    'Schaefer2018_400Parcels_7Networks_order_FSLMNI152_2mm.Centroid_RAS.csv'), ...
-    'Format','%d%q%f%f%f');
-
-for h = 1:height(roimap)
-    roimap.TextLabel{h,1} = sprintf('schaefer_%03d',roimap.ROILabel(h));
-    q = strsplit(roimap.ROIName{h},'_');
-    roimap.Network{h,1} = q{3};
-end
