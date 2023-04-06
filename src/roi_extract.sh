@@ -64,7 +64,11 @@ schaefer_to_csv.py
 
 ## Yeo thalamus ROIs (MNI space)
 
-roi_img="${roi_dir}"/Yeo-thalamus/1000subjects_TightThalamus_clusters007_ref
+# Hemispheres joined
+#roi_img="${roi_dir}"/Yeo-thalamus/1000subjects_TightThalamus_clusters007_ref
+
+# Hemispheres split
+roi_img="${roi_dir}"/thalamus-mask/Yeo7_thalamus_LR
 
 # Resample fMRI to ROI space
 echo Yeo resample
