@@ -34,7 +34,7 @@ end
 %% Schaefer 400 x Yeo 7
 
 % Matrix
-disp('Connectivity matrix 3')
+disp('Connectivity matrix Schaefer 400 x Yeo 7')
 R = compute_connmat(inp.schaefer_csv,inp.yeo_csv, ...
     inp.out_dir,'schaefer400_yeo7');
 
@@ -50,7 +50,8 @@ for d = 0.10:0.005:0.15
     result.PC{h,1} = PC;
 end
 
-% FIXME Make tall, add ROI label row, add mean row
+% FIXME Store PC as mat not cells. Compute mean over densities as an
+% additional density entry. Store each Yeo ROI as a separate column?
 
 return
 
