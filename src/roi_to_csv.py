@@ -6,15 +6,21 @@ import pandas
 import sys
 
 roicsv = sys.argv[1]
+fsltxt = sys.argv[2]
+
+# Output filename
+fslcsv = fsltxt.replace('.txt', '.csv')
+
+# Read ROI labels
 roiinfo = pandas.read_csv(roicsv)
 
-# Read time series into CSV and add labels
+# Read time series into data frame and add labels
 data = pandas.read_csv(
-    f'yeo.txt', 
+    fsltxt, 
     delim_whitespace=True, 
     usecols=roiinfo.Label-1,
     names=roiinfo.Region,
     )
     
 # Write to csv
-data.to_csv(f'yeo.csv', index=False)
+data.to_csv(fslcsv, index=False)

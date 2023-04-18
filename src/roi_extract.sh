@@ -58,7 +58,7 @@ fslmeants -i schaefer -o schaefer.txt --label="${roi_img}"
 
 # Convert to CSV and label appropriately
 echo Schaefer reformat
-schaefer_to_csv.py
+roi_to_csv.py "${roi_img}-labels.csv" schaefer.txt
 
 
 
@@ -83,4 +83,4 @@ fslmeants -i yeo -o yeo.txt --label="${roi_img}"
 
 # Convert to CSV and label appropriately
 echo Yeo reformat
-yeo_to_csv.py "${roi_img}"-labels.csv
+roi_to_csv.py "${roi_img}-labels.csv" yeo.txt
