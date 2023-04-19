@@ -1,19 +1,28 @@
 function compute_PCs(inp,roi_csv1,roi_csv2,row_networks,tag)
 
-% Matrix
+% Compute connectivity matrix
 [R,~,~,colnames] = compute_connmat( ...
     roi_csv1, ...
     roi_csv2, ...
     inp.out_dir, ...
     tag);
 
+% If the two ROI files are the same, zero the diagonal to prevent
+% self-connections interfering with PC calculation
+Rmat = table2array(R);
+if strcmp(roi_csv1,roi_csv2)
+    Rmat = Rmat - eye(size(Rmat)) .* Rmat;
+end
+    
 % PC
 densities = eval(inp.densities);
 PCs = [];
 for d = densities
-    thisR = table2array(R);
+    thisR = Rmat;
+
     % Zero edges below threshold but retain weights of those above
     thisR(thisR(:) < prctile(thisR(:),1-d)) = 0;
+    
     PCs = [PCs; participation_coeff(thisR,row_networks)];
 end
 

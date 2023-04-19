@@ -40,6 +40,7 @@ end
 
 compute_PCs(inp,inp.schaefer_csv,inp.yeo_csv,netmap.Network,'schaefer400_yeo7');
 compute_PCs(inp,inp.schaefer_csv,inp.thomas_csv,netmap.Network,'schaefer400_thomas12');
+compute_PCs(inp,inp.schaefer_csv,inp.schaefer_csv,netmap.Network,'schaefer400_schaefer400');
 
 return
 
