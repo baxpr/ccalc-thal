@@ -13,10 +13,33 @@ parse(P,varargin{:});
 inp = P.Results;
 
 
+warning('off','MATLAB:table:ModifiedAndSavedVarnames');
 
 
 %% Compute PCs
-compute_PCs(inp);
+
+
+%% Get Yeo7 network names for Schaefer400 ROI set
+%
+% Yeo7 ROIs with labels from Schaefer CSV:
+%   1 - Visual            (Vis)
+%   2 - Somatomotor       (SomMot)
+%   3 - Dorsal Attention  (DorsAttn)
+%   4 - Ventral Attention (SalVentAttn)
+%   5 - Limbic            (Limbic)
+%   6 - Frontoparietal    (Cont)
+%   7 - Default           (Default)
+netmap = readtable(fullfile(inp.roi_dir,'Schaefer2018', ...
+    'Schaefer2018_400Parcels_7Networks_order_FSLMNI152_2mm.Centroid_RAS.csv'), ...
+    'Format','%d%q%f%f%f');
+for h = 1:height(netmap)
+    netmap.TextLabel{h,1} = sprintf('schaefer_%03d',netmap.ROILabel(h));
+    q = strsplit(netmap.ROIName{h},'_');
+    netmap.Network{h,1} = q{3};
+end
+
+compute_PCs(inp,inp.schaefer_csv,inp.yeo_csv,netmap.Network,'schaefer400_yeo7');
+compute_PCs(inp,inp.schaefer_csv,inp.thomas_csv,netmap.Network,'schaefer400_thomas12');
 
 return
 
