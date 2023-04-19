@@ -53,10 +53,12 @@ end
 
 result = array2table(densities','VariableNames',{'density'});
 result = [result array2table(PCs,'VariableNames',colnames)];
+writetable(result,fullfile(inp.out_dir,'PC_schaefer400_yeo7.csv'));
 
-meanresult = table({densities},{inp.densities}, ...
-    'VariableNames',{'densities','densitystr'});
+meanresult = table({inp.densities}, ...
+    'VariableNames',{'densities'});
 meanresult = [meanresult array2table(mean(PCs),'VariableNames',colnames)];
+writetable(meanresult,fullfile(inp.out_dir,'meanPC_schaefer400_yeo7.csv'));
 
 return
 
