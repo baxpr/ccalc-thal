@@ -1,7 +1,10 @@
-function R = compute_connmat(roi_csv1,roi_csv2,out_dir,out_basename)
+function [R,Z,rownames,colnames] = compute_connmat(roi_csv1,roi_csv2,out_dir,out_basename)
 
 roi_data1 = readtable(roi_csv1);
 roi_data2 = readtable(roi_csv2);
+
+rownames = roi_data1.Properties.VariableNames;
+colnames = roi_data2.Properties.VariableNames;
 
 R = corr(table2array(roi_data1),table2array(roi_data2));
 Z = atanh(R) .* sqrt(size(roi_data1,1)-3);

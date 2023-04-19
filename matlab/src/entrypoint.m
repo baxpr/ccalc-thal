@@ -7,6 +7,7 @@ addOptional(P,'yeo_csv','/OUTPUTS/yeo.csv')
 addOptional(P,'wfmri_nii','/OUTPUTS/wfmri.nii')
 addOptional(P,'mask_nii','/OUTPUTS/thalamus-mask.nii')
 addOptional(P,'roi_dir','/opt/ccalc-thal/rois')
+addOptional(P,'densities','0.10:0.005:0.15')
 addOptional(P,'out_dir','/OUTPUTS')
 parse(P,varargin{:});
 inp = P.Results;
@@ -35,23 +36,27 @@ end
 
 % Matrix
 disp('Connectivity matrix Schaefer 400 x Yeo 7')
-R = compute_connmat(inp.schaefer_csv,inp.yeo_csv, ...
-    inp.out_dir,'schaefer400_yeo7');
+[R,~,~,colnames] = compute_connmat( ...
+    inp.schaefer_csv, ...
+    inp.yeo_csv, ...
+    inp.out_dir, ...
+    'schaefer400_yeo7');
 
 % PC
-result = table([],{},'VariableNames',{'density','PC'});
-h = 0;
-for d = 0.10:0.005:0.15
+densities = eval(inp.densities);
+PCs = [];
+for d = densities
     thisR = table2array(R);
     thisR(thisR(:) < prctile(thisR(:),1-d)) = 0;
-    PC = participation_coeff(thisR,netmap.Network);
-    h = h + 1;
-    result.density(h,1) = d;
-    result.PC{h,1} = PC;
+    PCs = [PCs; participation_coeff(thisR,netmap.Network)];
 end
 
-% FIXME Store PC as mat not cells. Compute mean over densities as an
-% additional density entry. Store each Yeo ROI as a separate column?
+result = array2table(densities','VariableNames',{'density'});
+result = [result array2table(PCs,'VariableNames',colnames)];
+
+meanresult = table({densities},{inp.densities}, ...
+    'VariableNames',{'densities','densitystr'});
+meanresult = [meanresult array2table(mean(PCs),'VariableNames',colnames)];
 
 return
 
