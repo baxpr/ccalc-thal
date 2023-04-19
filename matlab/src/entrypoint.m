@@ -65,16 +65,8 @@ compute_PCs( ...
 return
 
 
-%% Matrix, Schaefer 400 x Schaefer 400
-disp('Connectivity matrix 1')
-R1 = compute_connmat(inp.schaefer_csv,inp.schaefer_csv, ...
-    inp.out_dir,'schaefer400_schaefer400');
-
-% Matrix, Schaefer 400 x THOMAS 12
-disp('Connectivity matrix 2')
-R2 = compute_connmat(inp.schaefer_csv,inp.thomas_csv, ...
-    inp.out_dir,'schaefer400_thomas12');
-
+%% FIXME Maps for Schaefer 400 in thalamus mask
+% Get voxels to temp csv then use same func as above. Then remap to image
 
 % Maps, Schaefer 400. Only within mask of dilated Yeo7 whole thalamus
 disp('Connectivity maps')
