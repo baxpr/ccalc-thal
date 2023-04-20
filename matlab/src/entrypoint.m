@@ -39,7 +39,8 @@ for h = 1:height(netmap)
 end
 
 
-%% Compute PCs against Schaefer 400 set 
+%% Compute PCs against Schaefer 400 set
+disp('Computing PC on matrices')
 compute_PCs( ...
     inp, ...
     inp.schaefer_csv, ...
@@ -66,6 +67,7 @@ compute_PCs( ...
 %% Maps for Schaefer 400 in thalamus mask
 
 % Get voxel time series to csv then use same func as above
+disp('Computing PC on image')
 voxels_csv = fullfile(inp.out_dir,'thalamusvoxels.csv');
 voxels_to_csv(inp.wfmri_nii,inp.mask_nii,voxels_csv);
 compute_PCs( ...
