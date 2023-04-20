@@ -66,6 +66,8 @@ compute_PCs( ...
 
 %% Maps for Schaefer 400 in thalamus mask
 
+% FIXME We are getting negative PC values
+
 % Get voxel time series to csv then use same func as above
 disp('Computing PC on image')
 voxels_csv = fullfile(inp.out_dir,'thalamusvoxels.csv');
