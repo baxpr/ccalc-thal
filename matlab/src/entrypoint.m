@@ -85,9 +85,9 @@ meanPC_to_image( ...
 
 
 %% Conn maps for Schaefer 400 ROIs within mask of dilated Yeo7 whole thalamus
-disp('Connectivity maps')
-compute_connmaps(inp.schaefer_csv,inp.wfmri_nii,inp.mask_nii, ...
-    fullfile(inp.out_dir,'connmaps_schaefer400'));
+%disp('Connectivity maps')
+%compute_connmaps(inp.schaefer_csv,inp.wfmri_nii,inp.mask_nii, ...
+%    fullfile(inp.out_dir,'connmaps_schaefer400'));
 
 
 
