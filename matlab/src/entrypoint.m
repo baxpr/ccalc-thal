@@ -62,13 +62,24 @@ compute_PCs( ...
     'schaefer400_schaefer400' ...
     );
 
-return
+
+%% Maps for Schaefer 400 in thalamus mask
+
+% Get voxel time series to csv then use same func as above
+voxels_csv = fullfile(out_dir,'thalamusvoxels.csv');
+voxels_to_csv(inp.wfmri_nii,inp.mask_nii,voxels_csv);
+compute_PCs( ...
+    inp, ...
+    inp.schaefer_csv, ...
+    voxels_csv, ...
+    netmap.Network, ...
+    'schaefer400_voxels' ...
+    );
+
+% FIXME Remap to PC image inside thalamus mask
 
 
-%% FIXME Maps for Schaefer 400 in thalamus mask
-% Get voxels to temp csv then use same func as above. Then remap to image
-
-% Maps, Schaefer 400. Only within mask of dilated Yeo7 whole thalamus
+%% Maps, Schaefer 400. Only within mask of dilated Yeo7 whole thalamus
 disp('Connectivity maps')
 R4 = compute_connmaps(inp.schaefer_csv,inp.wfmri_nii,inp.mask_nii, ...
     fullfile(inp.out_dir,'connmaps_schaefer400'));
