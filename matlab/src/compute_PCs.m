@@ -21,7 +21,7 @@ for d = densities
     thisR = Rmat;
 
     % Zero edges below threshold but retain weights of those above
-    thisR(thisR(:) < prctile(thisR(:),1-d)) = 0;
+    thisR(thisR(:) < quantile(thisR(:),1-d)) = 0;
     
     PCs = [PCs; participation_coeff(thisR,row_networks)];
 end

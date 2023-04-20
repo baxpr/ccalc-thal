@@ -8,7 +8,7 @@ Vmask = spm_vol(mask_nii);
 Ymask = spm_read_vols(Vmask);
 keeps = Ymask(:) > 0;
 
-Yout = zeros(size(Ymask));
+Yout = nan(size(Ymask));
 Yout(keeps) = meanPC;
 Vout = rmfield(Vmask,'pinfo');
 Vout.fname = meanPC_nii;
