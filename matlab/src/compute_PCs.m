@@ -1,9 +1,10 @@
 function compute_PCs(inp,roi_csv1,roi_csv2,row_networks,tag)
 
 % Compute connectivity matrix
-[R,~,~,colnames] = compute_connmat( ...
+[R,~,colnames] = compute_connmat( ...
     roi_csv1, ...
     roi_csv2, ...
+    inp.connmetric, ...
     inp.out_dir, ...
     tag);
 
@@ -22,6 +23,9 @@ for d = densities
 
     % Zero edges below threshold but retain weights of those above
     thisR(thisR(:) < quantile(thisR(:),1-d)) = 0;
+    
+    % Or just binarize
+    %thisR = double(thisR >= quantile(thisR(:),1-d));
     
     PCs = [PCs; participation_coeff(thisR,row_networks)];
 end
