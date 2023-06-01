@@ -9,6 +9,7 @@ export roi_dir=/opt/ccalc-thal/rois
 export fmri_niigz=/INPUTS/filtered_removegm_noscrub_nadfmri.nii.gz
 export wfmri_niigz=/INPUTS/filtered_removegm_noscrub_wadfmri.nii.gz
 export label_info=
+export exclude_rois=
 export out_dir=/OUTPUTS
 
 # Parse input options
@@ -21,6 +22,7 @@ while [[ $# -gt 0 ]]; do
         --thomas_right)   export thomas_right="$2";   shift; shift ;;
         --roi_dir)        export roi_dir="$2";        shift; shift ;;
         --label_info)     export label_info="$2";     shift; shift ;;
+        --exclude_rois)   export exclude_rois="$2";   shift; shift ;;
         --out_dir)        export out_dir="$2";        shift; shift ;;
         *) echo "Input ${1} not recognized"; shift ;;
     esac
