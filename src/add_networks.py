@@ -5,11 +5,8 @@
 import pandas
 import sys
 
-roi_dir = sys.argv[1]
+networks_csv = sys.argv[1]
 out_dir = sys.argv[2]
-
-networks_csv = 'Schaefer2018_400Parcels_7Networks_order_FSLMNI152_2mm.Centroid_RAS.csv'
-networks_csv = f'{roi_dir}/Schaefer2018/{networks_csv}'
 
 networks = pandas.read_csv(networks_csv)
 

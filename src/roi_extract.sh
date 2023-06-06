@@ -45,6 +45,7 @@ thomas_to_csv.py
 # Exclude some ROIs if requested
 
 roi_img="${roi_dir}"/Schaefer2018/Schaefer2018_400Parcels_7Networks_order_FSLMNI152_2mm
+networks_csv="${roi_dir}"/Schaefer2018/Schaefer2018_400Parcels_7Networks_order_FSLMNI152_2mm.Centroid_RAS.csv
 
 # Resample fMRI to ROI space
 echo Schaefer resample
@@ -61,10 +62,17 @@ fslmeants -i schaefer -o schaefer.txt --label="${roi_img}"
 echo Schaefer reformat
 roi_to_csv.py "${roi_img}-labels.csv" schaefer.txt
 
+# Add network labels to ROI list
+add_networks.py "${networks_csv}" "${out_dir}"
+
 # Exclude some ROIs if requested
 if [[ -n "${exclude_rois}" ]]; then
     mv schaefer.csv schaefer_orig.csv
-    exclude_rois.py schaefer_orig.csv schaefer.csv "${exclude_rois}"
+    mv schaefer-networks.csv schaefer-networks_orig.csv
+    exclude_rois.py \
+        schaefer_orig.csv schaefer.csv \
+        schaefer-networks_orig.csv schaefer-networks.csv \
+        "${exclude_rois}"
 fi
 
 

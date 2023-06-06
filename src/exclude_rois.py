@@ -5,9 +5,11 @@
 import pandas
 import sys
 
-datacsv = sys.argv[1]
-outcsv = sys.argv[2]
-excludes = sys.argv[3]
+data_incsv = sys.argv[1]
+data_outcsv = sys.argv[2]
+networks_incsv = sys.argv[3]
+networks_outcsv = sys.argv[4]
+excludes = sys.argv[5]
 
 # Excludes are comma separated list like "1,5,219". Convert to list and zero-pad
 excludes = excludes.split(',')
@@ -16,8 +18,14 @@ print('Excluded ROIs:')
 print(excludes)
 
 # Load ROI data and drop cols
-data = pandas.read_csv(datacsv)
+data = pandas.read_csv(data_incsv)
 data = data.drop(columns=excludes)
 
 # Write back out
-data.to_csv(outcsv, index=False)
+data.to_csv(data_outcsv, index=False)
+
+# Load network/ROI list, exclude, write
+networks = pandas.read_csv(networks_incsv)
+networks = networks.drop(index=[x for x in networks.index if networks.Region[x] in excludes])
+networks.to_csv(networks_outcsv, index=False)
+
