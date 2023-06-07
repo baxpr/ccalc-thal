@@ -68,10 +68,8 @@ add_networks.py "${networks_csv}" "${out_dir}"
 # Exclude some ROIs if requested
 if [[ -n "${exclude_rois}" ]]; then
     mv schaefer.csv schaefer_orig.csv
-    mv schaefer-networks.csv schaefer-networks_orig.csv
     exclude_rois.py \
         schaefer_orig.csv schaefer.csv \
-        schaefer-networks_orig.csv schaefer-networks.csv \
         "${exclude_rois}"
 fi
 
