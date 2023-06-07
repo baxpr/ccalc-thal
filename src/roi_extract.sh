@@ -62,9 +62,6 @@ fslmeants -i schaefer -o schaefer.txt --label="${roi_img}"
 echo Schaefer reformat
 roi_to_csv.py "${roi_img}-labels.csv" schaefer.txt
 
-# Add network labels to ROI list
-add_networks.py "${networks_csv}" "${out_dir}"
-
 # Exclude some ROIs if requested
 if [[ -n "${exclude_rois}" ]]; then
     mv schaefer.csv schaefer_orig.csv
