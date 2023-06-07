@@ -41,6 +41,8 @@ result = array2table(densities','VariableNames',{'density'});
 result = [result array2table(PCs,'VariableNames',colnames)];
 writetable(result,fullfile(inp.out_dir,['PC_' tag '.csv']));
 
+% Mean. We could use nanmean here to get mean over all densities where the
+% voxel is connected
 meanresult = table({inp.densities}, ...
     'VariableNames',{'densities'});
 meanresult = [meanresult array2table(mean(PCs),'VariableNames',colnames)];
