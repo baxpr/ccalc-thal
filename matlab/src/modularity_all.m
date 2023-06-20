@@ -57,7 +57,7 @@ fprintf('\nA priori community structure:\n');
 fprintf('   Nodes: %d\n',nTotalROIs);
 fprintf('   Communities (%d):\n',length(M0))
 fprintf('      ');
-for u = 1:length(Mset)-1
+for u = 1:length(M0)-1
 	fprintf('%s,',M0{u});
 end
 fprintf('%d\n',M0{u+1});
