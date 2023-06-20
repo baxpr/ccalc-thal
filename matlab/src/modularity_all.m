@@ -51,16 +51,12 @@ if any( size(M0) ~= [size(W,1) 1] )
 end
 
 % Report on number of nodes, number of communities
+Mset = unique(M0);
 nTotalROIs = length(M0);
 
 fprintf('\nA priori community structure:\n');
 fprintf('   Nodes: %d\n',nTotalROIs);
-fprintf('   Communities (%d):\n',length(M0))
-fprintf('      ');
-for u = 1:length(M0)-1
-	fprintf('%s,',M0{u});
-end
-fprintf('%d\n',M0{u+1});
+fprintf('   Communities: %d\n',length(Mset))
 
 
 %% Minimum spanning tree
