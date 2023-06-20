@@ -53,6 +53,9 @@ end
 if any( size(M0) ~= [size(W,1) 1] )
 	error('M0 must be a column vector the length of W')
 end
+if any( isnan(M0) | any(M0==0) )
+	error('NAN or 0 found in community vector');
+end
 
 
 %% Compute modularity
@@ -79,8 +82,6 @@ B = (B + B.') / 2;
 % Compute modularity by summing the terms of B from node pairs that are in
 % the same community. This step relies on having set the diagonal of W to
 % zero as done above.
-
-%% FIXME we are here
 Qspec = sum( B(bsxfun(@eq,M0,M0.')) );
 Nspec = length(unique(M0));
 Mspec = M0;

@@ -105,7 +105,16 @@ R = compute_connmat( ...
     'schaefer400_modularity' ...
     );
 
-modularity_all(R,schaefer_labels.Network);
+% Convert network list to integers for use with modularity and BCT
+% functions
+networks = unique(schaefer_labels.Network);
+network_nums = nan(numel(schaefer_labels.Network),1);
+for n = 1:numel(networks)
+    network_nums(strcmp(schaefer_labels.Network,networks{n})) = n;
+end
+
+% Compute modularity
+modularity_all(R,network_nums);
 
 
 %% Conn maps for Schaefer 400 ROIs within mask of dilated Yeo7 whole thalamus
