@@ -44,6 +44,16 @@ schaefer_labels = outerjoin( ...
     'Type','left' ...
     );
 
+% Add numeric network labels for use with BCT functions
+schaefer_labels.NetworkNum(strcmp(schaefer_labels.Network,'Vis')) = 1;
+schaefer_labels.NetworkNum(strcmp(schaefer_labels.Network,'SomMot')) = 2;
+schaefer_labels.NetworkNum(strcmp(schaefer_labels.Network,'DorsAttn')) = 3;
+schaefer_labels.NetworkNum(strcmp(schaefer_labels.Network,'SalVentAttn')) = 4;
+schaefer_labels.NetworkNum(strcmp(schaefer_labels.Network,'Limbic')) = 5;
+schaefer_labels.NetworkNum(strcmp(schaefer_labels.Network,'Cont')) = 6;
+schaefer_labels.NetworkNum(strcmp(schaefer_labels.Network,'Default')) = 7;
+
+
 
 %% Compute PCs against Schaefer 400 ROIs. Also stores conn matrices
 disp('Computing PC on time series')
@@ -105,14 +115,6 @@ R = compute_connmat( ...
     'schaefer400_modularity' ...
     );
 
-% Convert network list to integers for use with modularity and BCT
-% functions
-networks = unique(schaefer_labels.Network);
-network_nums = nan(numel(schaefer_labels.Network),1);
-for n = 1:numel(networks)
-    network_nums(strcmp(schaefer_labels.Network,networks{n})) = n;
-end
-
 % Compute modularity
 [Qspec_mst,Nspec_mst,Mspec_mst, ...
     Qopt_mst,Nopt_mst,Mopt_mst, ...
@@ -120,7 +122,10 @@ end
     Qopt_asym,Nopt_asym,Mopt_asym, ...
     Qoptdefault_mst,Noptdefault_mst,Moptdefault_mst, ...
     Qoptdefault_asym,Noptdefault_asym,Moptdefault_asym] = ...
-    modularity_all(table2array(R),network_nums);
+    modularity_all(table2array(R),schaefer_labels.NetworkNum);
+
+% Additionally compute modularity at specific thresholds
+
 
 disp('finished')
 
