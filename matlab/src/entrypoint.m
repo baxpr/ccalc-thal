@@ -44,16 +44,6 @@ schaefer_labels = outerjoin( ...
     'Type','left' ...
     );
 
-% Add numeric network labels for use with BCT functions
-schaefer_labels.NetworkNum(strcmp(schaefer_labels.Network,'Vis')) = 1;
-schaefer_labels.NetworkNum(strcmp(schaefer_labels.Network,'SomMot')) = 2;
-schaefer_labels.NetworkNum(strcmp(schaefer_labels.Network,'DorsAttn')) = 3;
-schaefer_labels.NetworkNum(strcmp(schaefer_labels.Network,'SalVentAttn')) = 4;
-schaefer_labels.NetworkNum(strcmp(schaefer_labels.Network,'Limbic')) = 5;
-schaefer_labels.NetworkNum(strcmp(schaefer_labels.Network,'Cont')) = 6;
-schaefer_labels.NetworkNum(strcmp(schaefer_labels.Network,'Default')) = 7;
-
-
 
 %% Compute PCs against Schaefer 400 ROIs. Also stores conn matrices
 disp('Computing PC on time series')
