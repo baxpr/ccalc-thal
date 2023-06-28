@@ -45,7 +45,6 @@ thomas_to_csv.py
 # Exclude some ROIs if requested
 
 roi_img="${roi_dir}"/Schaefer2018/Schaefer2018_400Parcels_7Networks_order_FSLMNI152_2mm
-networks_csv="${roi_dir}"/Schaefer2018/Schaefer2018_400Parcels_7Networks_order_FSLMNI152_2mm.Centroid_RAS.csv
 
 # Resample fMRI to ROI space
 echo Schaefer resample
@@ -58,15 +57,20 @@ flirt -usesqform -applyxfm \
 echo Schaefer extract
 fslmeants -i schaefer -o schaefer.txt --label="${roi_img}"
 
+# Copy community info
+cp "${roi_img}-labels.csv" schaefer-networks.csv
+
 # Convert to CSV and label appropriately
 echo Schaefer reformat
-roi_to_csv.py "${roi_img}-labels.csv" schaefer.txt
+roi_to_csv.py schaefer-networks.csv schaefer.txt
 
 # Exclude some ROIs if requested
 if [[ -n "${exclude_rois}" ]]; then
     mv schaefer.csv schaefer_orig.csv
+    mv schaefer-networks.csv schaefer-networks_orig.csv
     exclude_rois.py \
         schaefer_orig.csv schaefer.csv \
+        schaefer-networks_orig.csv schaefer-networks.csv \
         "${exclude_rois}"
 fi
 
@@ -90,6 +94,10 @@ flirt -usesqform -applyxfm \
 echo Yeo extract
 fslmeants -i yeo -o yeo.txt --label="${roi_img}"
 
+# Copy community info
+cp "${roi_img}-labels.csv" yeo-networks.csv
+
 # Convert to CSV and label appropriately
 echo Yeo reformat
-roi_to_csv.py "${roi_img}-labels.csv" yeo.txt
+roi_to_csv.py yeo-networks.csv yeo.txt
+

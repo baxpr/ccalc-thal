@@ -39,7 +39,31 @@
 
 
 
+% As a function of threshold 0..1:
 
-%%
+% For info:
+%  Density (percent non-zero edges)   density_und
+%  Number of disconnected components in graph   get_components
+%
+% For thalamus node specifically:
+%            Number of non-zero edges (this is just degree)
+%  Degree    degrees_und
+%  Strength  strengths_und, strengths_und_sign
+%  PC        participation_coef, participation_coef_sign
+%  WMD       module_degree_zscore
 
-% Load schafer data
+
+
+for threshold = 0:0.02:1
+
+    % For PC, we are only capturing the value for the thalamus node, and
+    % the thalamus node's community assignment is irrelevant to its
+    % computation so we just choose 1 if it's not already specified.
+    
+    % For WMD, the thalamus node must be assigned to a particular
+    % community, so if it's not specified we skip this metric (e.g. for
+    % THOMAS ROIs).
+    
+    
+end
+

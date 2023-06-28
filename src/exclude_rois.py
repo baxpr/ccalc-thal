@@ -7,9 +7,9 @@ import sys
 
 data_incsv = sys.argv[1]
 data_outcsv = sys.argv[2]
-excludes = sys.argv[3]
-#networks_incsv = sys.argv[4]
-#networks_outcsv = sys.argv[5]
+networks_incsv = sys.argv[3]
+networks_outcsv = sys.argv[4]
+excludes = sys.argv[5]
 
 # Excludes are comma separated list like "1,5,219". Convert to list and zero-pad
 excludes = excludes.split(',')
@@ -25,8 +25,7 @@ data = data.drop(columns=excludes)
 data.to_csv(data_outcsv, index=False)
 
 # Load network/ROI list, exclude, write
-# We don't need this if later read-in is smart and merges the network labels correctly
-#networks = pandas.read_csv(networks_incsv)
-#networks = networks.drop(index=[x for x in networks.index if networks.Region[x] in excludes])
-#networks.to_csv(networks_outcsv, index=False)
+networks = pandas.read_csv(networks_incsv)
+networks = networks.drop(index=[x for x in networks.index if networks.Region[x] in excludes])
+networks.to_csv(networks_outcsv, index=False)
 
