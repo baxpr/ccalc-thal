@@ -126,3 +126,23 @@ for t = 1:numel(thresholds)
     
 end
 
+
+figure(1); clf
+
+subplot(3,1,1)
+plot(result.density,result.degree)
+xlabel('Density')
+ylabel('Degree')
+
+subplot(3,1,2)
+plot(result.density,result.PC)
+xlabel('Density')
+ylabel('PC')
+
+subplot(3,1,3)
+plot(result.density,result.WMD)
+xlabel('Density')
+ylabel('WMD')
+
+
+
