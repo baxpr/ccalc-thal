@@ -37,6 +37,9 @@
 
 % Compute DC, PC, WMD
 
+warning('off','MATLAB:table:RowsAddedExistingVars')
+
+
 % Load Schaefer data and network labels
 data_schaefer = readtable('../../OUTPUTS/schaefer.csv');
 info_schaefer = readtable('../../OUTPUTS/schaefer-networks.csv');
@@ -68,14 +71,7 @@ communities_yeo = info_yeo.NetworkNum;
 % Combine data for a single Yeo thalamus ROI
 data_roi = data_yeo;
 communities_roi = communities_yeo;
-this_index = 1;
-data_this = [data_schaefer data_roi(:,this_index)];
-communities_this = [communities_schaefer; communities_roi(this_index)];
 
-
-% Correlation matrix with diagonals set to zero
-R = corr(table2array(data_this));
-R = R - R.*eye(size(R));
 
 % As a function of threshold 0..1:
 
@@ -93,56 +89,136 @@ R = R - R.*eye(size(R));
 
 % We will assume our ROI of interest is the final entry in the matrix
 thresholds = 0:0.02:1;
+%thresholds = [0.1 0.3];
 
-result = table();
-for t = 1:numel(thresholds)
-
-    result.threshold(t,1) = thresholds(t);
+for this_index = 1:width(data_roi)
     
-    % Threshold only
-    %Cw = R;
-    %Cw(R<threshold) = 0;
+    data_this = [data_schaefer data_roi(:,this_index)];
+    roiname_this = data_roi.Properties.VariableNames{this_index};
+    communities_this = [communities_schaefer; communities_roi(this_index)];
     
-    % Threshold and binarize
-    C = double(R>=thresholds(t));
+    result_this = table();
+    for t = 1:numel(thresholds)
+        
+        result_this.threshold(t,1) = thresholds(t);
+        
+        % Correlation matrix with diagonals set to zero
+        R = corr(table2array(data_this));
+        R = R - R.*eye(size(R));
+        
+        % Threshold only
+        %Cw = R;
+        %Cw(R<threshold) = 0;
+        
+        % Threshold and binarize
+        C = double(R>=thresholds(t));
+        
+        [~,comp_sizes] = get_components(C);
+        result_this.ncomponents(t,1) = numel(comp_sizes);
+        result_this.density(t,1) = density_und(C);
+        degree = degrees_und(C);
+        result_this.roi_degree(t,1) = degree(end);
+        
+        % For PC, we are only capturing the value for the thalamus node, and
+        % the thalamus node's community assignment is irrelevant to its
+        % computation so we just choose 1 if it's not already specified.
+        PC = participation_coef(C,communities_this);
+        result_this.roi_PC(t,1) = PC(end);
+        
+        % For WMD, the thalamus node must be assigned to a particular
+        % community, so if it's not specified we skip this metric (e.g. for
+        % THOMAS ROIs).
+        WMD = module_degree_zscore(C,communities_this);
+        result_this.roi_WMD(t,1) = WMD(end);
+        
+    end
+    result_this.Region(:) = {roiname_this};
     
-    [~,comp_sizes] = get_components(C);
-    result.ncomponents(t,1) = numel(comp_sizes);
-    result.density(t,1) = density_und(C);
-    degree = degrees_und(C);
-    result.degree(t,1) = degree(end);
-    
-    % For PC, we are only capturing the value for the thalamus node, and
-    % the thalamus node's community assignment is irrelevant to its
-    % computation so we just choose 1 if it's not already specified.
-    PC = participation_coef(C,communities_this);
-    result.PC(t,1) = PC(end);
-    
-    % For WMD, the thalamus node must be assigned to a particular
-    % community, so if it's not specified we skip this metric (e.g. for
-    % THOMAS ROIs).
-    WMD = module_degree_zscore(C,communities_this);
-    result.WMD(t,1) = WMD(end);
+    if this_index==1
+        result = result_this;
+    else
+        result = [result; result_this];
+    end
     
 end
 
 
+%%
 figure(1); clf
 
-subplot(3,1,1)
-plot(result.density,result.degree)
+%xlim = [0.01 0.20];
+%xlim = [0.05 0.50];
+
+subplot(3,2,1)
+plot(result_this.density,result_this.threshold,'-o')
 xlabel('Density')
-ylabel('Degree')
+ylabel('Threshold')
+set(gca,'XLim',xlim)
 
-subplot(3,1,2)
-plot(result.density,result.PC)
+subplot(3,2,2)
+plot(result_this.density,result_this.ncomponents,'-o')
 xlabel('Density')
-ylabel('PC')
+ylabel('Connected components')
+set(gca,'XLim',xlim)
 
-subplot(3,1,3)
-plot(result.density,result.WMD)
+subplot(3,2,3)
+plot(result_this.density,result_this.roi_degree,'-o')
 xlabel('Density')
-ylabel('WMD')
+ylabel('ROI Degree')
+set(gca,'XLim',xlim)
+
+subplot(3,2,4)
+plot(result_this.density,result_this.roi_PC,'-o')
+xlabel('Density')
+ylabel('ROI PC')
+set(gca,'XLim',xlim)
+
+subplot(3,2,5)
+plot(result_this.density,result_this.roi_WMD,'-o')
+xlabel('Density')
+ylabel('ROI WMD')
+set(gca,'XLim',xlim)
 
 
+%% Summary plot for all ROIs
+all_threshold = [];
+all_density = [];
+all_degree = [];
+all_PC = [];
+all_WMD = [];
+for r = unique(result.Region)'
+    d = result(strcmp(result.Region,r{1}),:);
+    d = sortrows(d,'threshold');
+    all_threshold(end+1,:) = d.threshold';
+    all_density(end+1,:) = d.density';
+    all_degree(end+1,:) = d.roi_degree';
+    all_PC(end+1,:) = d.roi_PC';
+    all_WMD(end+1,:) = d.roi_WMD';
+end
 
+figure(2); clf
+
+xlim = [0.05 0.50];
+xlim = [0.01 0.80];
+
+for r = 1:size(all_density,1)
+    
+    subplot(2,2,1); hold on
+    plot(all_density(r,:),all_degree(r,:))
+    xlabel('Density')
+    ylabel('ROI Degree')
+    set(gca,'XLim',xlim)
+    
+    subplot(2,2,2); hold on
+    plot(all_density(r,:),all_PC(r,:))
+    xlabel('Density')
+    ylabel('ROI PC')
+    set(gca,'XLim',xlim)
+    
+    subplot(2,2,3); hold on
+    plot(all_density(r,:),all_WMD(r,:))
+    xlabel('Density')
+    ylabel('ROI WMD')
+    set(gca,'XLim',xlim)
+    
+end
