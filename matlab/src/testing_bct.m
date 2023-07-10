@@ -87,12 +87,11 @@ communities_roi = communities_yeo;
 %  WMD       module_degree_zscore
 
 
-% We will assume our ROI of interest is the final entry in the matrix
-thresholds = 0:0.02:1;
-%thresholds = [0.1 0.3];
+thresholds = 0.01:0.01:1;
 
 for this_index = 1:width(data_roi)
     
+    % We will assume our ROI of interest is the final entry in the matrix
     data_this = [data_schaefer data_roi(:,this_index)];
     roiname_this = data_roi.Properties.VariableNames{this_index};
     communities_this = [communities_schaefer; communities_roi(this_index)];
@@ -107,17 +106,21 @@ for this_index = 1:width(data_roi)
         R = R - R.*eye(size(R));
         
         % Threshold only
-        %Cw = R;
-        %Cw(R<threshold) = 0;
+        C = R;
+        C(R<thresholds(t)) = 0;
         
         % Threshold and binarize
-        C = double(R>=thresholds(t));
+        %C = double(R>=thresholds(t));
         
         [~,comp_sizes] = get_components(C);
         result_this.ncomponents(t,1) = numel(comp_sizes);
         result_this.density(t,1) = density_und(C);
+        
         degree = degrees_und(C);
         result_this.roi_degree(t,1) = degree(end);
+        
+        strength = strengths_und(C);
+        result_this.roi_strength(t,1) = strength(end);
         
         % For PC, we are only capturing the value for the thalamus node, and
         % the thalamus node's community assignment is irrelevant to its
@@ -141,6 +144,10 @@ for this_index = 1:width(data_roi)
     end
     
 end
+
+% PC of 0 is meaningless so make it NaN for plotting
+result.roi_PC(result.roi_PC==0) = NaN;
+
 
 
 %%
@@ -168,12 +175,18 @@ ylabel('ROI Degree')
 set(gca,'XLim',xlim)
 
 subplot(3,2,4)
+plot(result_this.density,result_this.roi_strength,'-o')
+xlabel('Density')
+ylabel('ROI Strength')
+set(gca,'XLim',xlim)
+
+subplot(3,2,5)
 plot(result_this.density,result_this.roi_PC,'-o')
 xlabel('Density')
 ylabel('ROI PC')
 set(gca,'XLim',xlim)
 
-subplot(3,2,5)
+subplot(3,2,6)
 plot(result_this.density,result_this.roi_WMD,'-o')
 xlabel('Density')
 ylabel('ROI WMD')
@@ -184,6 +197,7 @@ set(gca,'XLim',xlim)
 all_threshold = [];
 all_density = [];
 all_degree = [];
+all_strength = [];
 all_PC = [];
 all_WMD = [];
 for r = unique(result.Region)'
@@ -192,6 +206,7 @@ for r = unique(result.Region)'
     all_threshold(end+1,:) = d.threshold';
     all_density(end+1,:) = d.density';
     all_degree(end+1,:) = d.roi_degree';
+    all_strength(end+1,:) = d.roi_strength';
     all_PC(end+1,:) = d.roi_PC';
     all_WMD(end+1,:) = d.roi_WMD';
 end
@@ -210,12 +225,18 @@ for r = 1:size(all_density,1)
     set(gca,'XLim',xlim)
     
     subplot(2,2,2); hold on
+    plot(all_density(r,:),all_strength(r,:))
+    xlabel('Density')
+    ylabel('ROI Strength')
+    set(gca,'XLim',xlim)
+    
+    subplot(2,2,3); hold on
     plot(all_density(r,:),all_PC(r,:))
     xlabel('Density')
     ylabel('ROI PC')
     set(gca,'XLim',xlim)
     
-    subplot(2,2,3); hold on
+    subplot(2,2,4); hold on
     plot(all_density(r,:),all_WMD(r,:))
     xlabel('Density')
     ylabel('ROI WMD')
