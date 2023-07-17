@@ -67,10 +67,22 @@ info_yeo = outerjoin( ...
     );
 communities_yeo = info_yeo.NetworkNum;
 
+%% And for THOMAS
+% There are no community assignments so we assign NaN
+data_thomas = readtable('../../OUTPUTS/thomas.csv');
+info_thomas = table( ...
+    data_thomas.Properties.VariableNames', ...
+    'VariableNames',{'Region'} ...
+    );
+communities_thomas = nan(height(info_thomas),1);
 
-% Combine data for a single Yeo thalamus ROI
-data_roi = data_yeo;
-communities_roi = communities_yeo;
+
+
+%% Which ROIs we will run on
+%data_roi = data_yeo;
+%communities_roi = communities_yeo;
+data_roi = data_thomas;
+communities_roi = communities_thomas;
 
 
 % As a function of threshold 0..1:
@@ -125,14 +137,21 @@ for this_index = 1:width(data_roi)
         % For PC, we are only capturing the value for the thalamus node, and
         % the thalamus node's community assignment is irrelevant to its
         % computation so we just choose 1 if it's not already specified.
+        if isnan(communities_roi(this_index))
+            communities_this(end) = 1;
+        end
         PC = participation_coef(C,communities_this);
         result_this.roi_PC(t,1) = PC(end);
         
         % For WMD, the thalamus node must be assigned to a particular
         % community, so if it's not specified we skip this metric (e.g. for
         % THOMAS ROIs).
-        WMD = module_degree_zscore(C,communities_this);
-        result_this.roi_WMD(t,1) = WMD(end);
+        if isnan(communities_roi(this_index))
+            result_this.roi_WMD(t,1) = nan;
+        else
+            WMD = module_degree_zscore(C,communities_this);
+            result_this.roi_WMD(t,1) = WMD(end);
+        end
         
     end
     result_this.Region(:) = {roiname_this};
@@ -150,7 +169,7 @@ result.roi_PC(result.roi_PC==0) = NaN;
 
 
 
-%%
+%% Plots for a single ROI
 figure(1); clf
 
 %xlim = [0.01 0.20];
