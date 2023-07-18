@@ -83,14 +83,16 @@ result = table();
 ct = 0;
 
 % Which ROIs we will run on
-for roi_set = [1 2]
+for r = [1 2]
     
-    if roi_set==1
+    if r==1
         data_roi = data_yeo;
         communities_roi = communities_yeo;
-    elseif roi_set==2
+        roi_set = 'Yeo7';
+    elseif r==2
         data_roi = data_thomas;
         communities_roi = communities_thomas;
+        roi_set = 'THOMAS';
     end
     
     
@@ -139,6 +141,7 @@ for roi_set = [1 2]
             end
             
             result.Region{ct,1} = roiname_this;
+            result.ROI_Set{ct,1} = roi_set;
             
         end  % threshold
         
@@ -175,6 +178,7 @@ for t = 1:numel(thresholds)
         result.roi_PC(ct,1) = PC(k);
         result.roi_WMD(ct,1) = WMD(k);
         result.Region{ct,1} = data_schaefer.Properties.VariableNames{k};
+        result.ROI_Set{ct,1} = 'Schaefer400';
     end
     
 end
