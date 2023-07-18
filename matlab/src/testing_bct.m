@@ -78,11 +78,17 @@ communities_thomas = nan(height(info_thomas),1);
 
 
 
+
 %% Which ROIs we will run on
-%data_roi = data_yeo;
-%communities_roi = communities_yeo;
-data_roi = data_thomas;
-communities_roi = communities_thomas;
+data_roi = data_yeo;
+communities_roi = communities_yeo;
+%data_roi = data_thomas;
+%communities_roi = communities_thomas;
+
+% We can't just plug in Schaefer ROIs directly because they're already in
+% there - need to tweak code to use the matrix normally for that part
+%data_roi = data_schaefer;   % won't work
+%communities_roi = communities_schaefer;   % won't work
 
 
 % As a function of threshold 0..1:
@@ -113,16 +119,7 @@ for this_index = 1:width(data_roi)
         
         result_this.threshold(t,1) = thresholds(t);
         
-        % Correlation matrix with diagonals set to zero
-        R = corr(table2array(data_this));
-        R = R - R.*eye(size(R));
-        
-        % Threshold only
-        C = R;
-        C(R<thresholds(t)) = 0;
-        
-        % Threshold and binarize
-        %C = double(R>=thresholds(t));
+        C = get_network_matrix(table2array(data_this),thresholds(t));
         
         [~,comp_sizes] = get_components(C);
         result_this.ncomponents(t,1) = numel(comp_sizes);
@@ -166,6 +163,40 @@ end
 
 % PC of 0 is meaningless so make it NaN for plotting
 result.roi_PC(result.roi_PC==0) = NaN;
+
+
+
+%% Schaefer-only metrics
+% No extra tricks, just straightforward BCT computations
+thresholds = 0.01:0.01:1;
+result_schaefer = table();
+ct = 0;
+for t = 1:numel(thresholds)
+    
+    C = get_network_matrix(table2array(data_schaefer),thresholds(t));
+    [~,comp_sizes] = get_components(C);
+    ncomp = numel(comp_sizes);
+    density = density_und(C);
+    degree = degrees_und(C);
+    strength = strengths_und(C);
+    PC = participation_coef(C,communities_schaefer);
+    WMD = module_degree_zscore(C,communities_schaefer);
+
+    % Reshape into table organized by ROI
+    for k = 1:numel(PC)
+        ct = ct + 1;
+        result_schaefer.threshold(ct,1) = thresholds(t);
+        result_schaefer.ncomponents(ct,1) = ncomp;
+        result_schaefer.density(ct,1) = density;
+        result_schaefer.roi_degree(ct,1) = degree(k);
+        result_schaefer.roi_strength(ct,1) = strength(k);
+        result_schaefer.roi_PC(ct,1) = PC(k);
+        result_schaefer.roi_WMD(ct,1) = WMD(k);
+        result_schaefer.Region{ct,1} = data_schaefer.Properties.VariableNames{k};
+    end
+    
+end
+
 
 
 
