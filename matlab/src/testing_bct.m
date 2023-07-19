@@ -88,7 +88,7 @@ info_voxel = table( ...
     'VariableNames',{'Region'} ...
     );
 % FIXME get communities for voxels from Yeo7
-community_voxel = nan(height(info_voxel),1);
+communities_voxel = nan(height(info_voxel),1);
 
 
 %% Computations
