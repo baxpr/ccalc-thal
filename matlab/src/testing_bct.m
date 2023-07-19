@@ -23,6 +23,9 @@
 %    Within-module degree
 %    Modularity
 
+out_dir = '../../OUTPUTS';
+wfmri_nii = fullfile(out_dir,'wfmri.nii');
+mask_nii = fullfile(out_dir,'thalamus-mask.nii');
 
 
 %% Steps:
@@ -41,8 +44,8 @@ warning('off','MATLAB:table:RowsAddedExistingVars')
 
 
 % Load Schaefer data and network labels
-data_schaefer = readtable('../../OUTPUTS/schaefer.csv');
-info_schaefer = readtable('../../OUTPUTS/schaefer-networks.csv');
+data_schaefer = readtable(fullfile(out_dir,'schaefer.csv'));
+info_schaefer = readtable(fullfile(out_dir,'schaefer-networks.csv'));
 
 % Get actual varnames from the data, and re-order network names and labels
 % to match
@@ -56,8 +59,8 @@ info_schaefer = outerjoin( ...
 communities_schaefer = info_schaefer.NetworkNum;
 
 % Same for Yeo ROIs
-data_yeo = readtable('../../OUTPUTS/yeo.csv');
-info_yeo = readtable('../../OUTPUTS/yeo-networks.csv');
+data_yeo = readtable(fullfile(out_dir,'yeo.csv'));
+info_yeo = readtable(fullfile(out_dir,'yeo-networks.csv'));
 info_yeo = outerjoin( ...
     table(data_yeo.Properties.VariableNames','VariableNames',{'Region'}), ...
     info_yeo, ...
@@ -67,14 +70,26 @@ info_yeo = outerjoin( ...
     );
 communities_yeo = info_yeo.NetworkNum;
 
-%% And for THOMAS
+% And for THOMAS
 % There are no community assignments so we assign NaN
-data_thomas = readtable('../../OUTPUTS/thomas.csv');
+data_thomas = readtable(fullfile(out_dir,'thomas.csv'));
 info_thomas = table( ...
     data_thomas.Properties.VariableNames', ...
     'VariableNames',{'Region'} ...
     );
 communities_thomas = nan(height(info_thomas),1);
+
+% And for thalamus voxels
+voxels_csv = fullfile(out_dir,'thalamusvoxels.csv');
+voxels_to_csv(wfmri_nii,mask_nii,voxels_csv);
+data_voxel = readtable(voxels_csv);
+info_voxel = table( ...
+    data_voxel.Properties.VariableNames', ...
+    'VariableNames',{'Region'} ...
+    );
+% FIXME get communities for voxels from Yeo7
+community_voxel = nan(height(info_voxel),1);
+
 
 %% Computations
 % Add to results table a row at a time
@@ -83,7 +98,7 @@ result = table();
 ct = 0;
 
 % Which ROIs we will run on
-for r = [1 2]
+for r = [1 2 3]
     
     if r==1
         data_roi = data_yeo;
@@ -93,6 +108,10 @@ for r = [1 2]
         data_roi = data_thomas;
         communities_roi = communities_thomas;
         roi_set = 'THOMAS';
+    elseif r==3
+        data_roi = data_voxel;
+        communities_roi = communities_voxel;
+        roi_set = 'voxel';
     end
     
     
@@ -153,6 +172,9 @@ for r = [1 2]
 end  % ROI set
 
 
+%% FIXME Covert voxel results back to images and remove from results table
+
+
 %% Schaefer-only metrics
 % No extra tricks, just straightforward BCT computations. Add to same
 % results table
@@ -184,6 +206,8 @@ for t = 1:numel(thresholds)
 end
 
 
+
+return
 
 
 %% Plots for a single ROI
