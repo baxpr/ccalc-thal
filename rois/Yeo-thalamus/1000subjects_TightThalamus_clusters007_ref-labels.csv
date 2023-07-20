@@ -1,8 +1,8 @@
-Label,Region
-1,yeo7_1
-2,yeo7_2
-3,yeo7_3
-4,yeo7_4
-5,yeo7_5
-6,yeo7_6
-7,yeo7_7
+Label,Region,Network,NetworkNum
+1,yeo7_1,Vis,1
+2,yeo7_2,SomMot,2
+3,yeo7_3,DorsAttn,3
+4,yeo7_4,SalVentAttn,4
+5,yeo7_5,Limbic,5
+6,yeo7_6,Cont,6
+7,yeo7_7,Default,7

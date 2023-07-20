@@ -26,6 +26,8 @@
 out_dir = '../../OUTPUTS';
 wfmri_nii = fullfile(out_dir,'wfmri.nii');
 mask_nii = fullfile(out_dir,'thalamus-mask.nii');
+%thresholds = 0.01:0.01:0.9;
+thresholds = 0.1:0.1:0.9;
 
 
 %% Steps:
@@ -87,13 +89,15 @@ info_voxel = table( ...
     data_voxel.Properties.VariableNames', ...
     'VariableNames',{'Region'} ...
     );
-% FIXME get communities for voxels from Yeo7
+% FIXME get communities for voxels from Yeo7 File is
+% Yeo-thalamus/1000subjects_TightThalamus_clusters007_ref.nii.gz resampled
+% in entrypoint.sh along with the thalamus mask. Need to copy over the
+% -labels file with network info and read community from that
 communities_voxel = nan(height(info_voxel),1);
 
 
 %% Computations
 % Add to results table a row at a time
-thresholds = 0.01:0.01:1;
 result = table();
 ct = 0;
 
@@ -166,13 +170,14 @@ for r = [1 2 3]
         
     end  % thalamus ROI
     
-    % PC of 0 is meaningless so make it NaN for plotting
+    % PC of 0 just means no connections, so make it NaN for plotting?
     %result.roi_PC(result.roi_PC==0) = NaN;
     
 end  % ROI set
 
 
 %% FIXME Covert voxel results back to images and remove from results table
+% But show or capture histogram first
 
 
 %% Schaefer-only metrics
