@@ -26,8 +26,10 @@
 out_dir = '../../OUTPUTS';
 wfmri_nii = fullfile(out_dir,'wfmri.nii');
 mask_nii = fullfile(out_dir,'thalamus-mask.nii');
+networks_nii = fullfile(out_dir,'1000subjects_TightThalamus_clusters007_ref.nii');
 %thresholds = 0.01:0.01:0.9;
-thresholds = 0.1:0.1:0.9;
+thresholds = 0.1:0.05:0.9;
+density_range_for_avg = [0.1 0.15];
 
 
 %% Steps:
@@ -83,17 +85,11 @@ communities_thomas = nan(height(info_thomas),1);
 
 % And for thalamus voxels
 voxels_csv = fullfile(out_dir,'thalamusvoxels.csv');
-voxels_to_csv(wfmri_nii,mask_nii,voxels_csv);
+voxellabels_csv = fullfile(out_dir,'thalamusvoxels-labels.csv');
+voxels_to_csv(wfmri_nii,mask_nii,networks_nii,voxels_csv,voxellabels_csv);
 data_voxel = readtable(voxels_csv);
-info_voxel = table( ...
-    data_voxel.Properties.VariableNames', ...
-    'VariableNames',{'Region'} ...
-    );
-% FIXME get communities for voxels from Yeo7 File is
-% Yeo-thalamus/1000subjects_TightThalamus_clusters007_ref.nii.gz resampled
-% in entrypoint.sh along with the thalamus mask. Need to copy over the
-% -labels file with network info and read community from that
-communities_voxel = nan(height(info_voxel),1);
+info_voxel = readtable(voxellabels_csv);
+communities_voxel = info_voxel.Network;
 
 
 %% Computations
@@ -176,7 +172,7 @@ for r = [1 2 3]
 end  % ROI set
 
 
-%% FIXME Covert voxel results back to images and remove from results table
+%% FIXME Convert voxel results back to images and remove from results table
 % But show or capture histogram first
 
 
