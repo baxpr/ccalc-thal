@@ -28,7 +28,7 @@ wfmri_nii = fullfile(out_dir,'wfmri.nii');
 mask_nii = fullfile(out_dir,'thalamus-mask.nii');
 networks_nii = fullfile(out_dir,'1000subjects_TightThalamus_clusters007_ref.nii');
 %thresholds = 0.01:0.01:0.9;
-thresholds = 0.1:0.05:0.9;
+thresholds = 0.1:0.05:0.8;
 density_range_for_avg = [0.1 0.15];
 
 
