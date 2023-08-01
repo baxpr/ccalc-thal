@@ -28,8 +28,8 @@ wfmri_nii = fullfile(out_dir,'wfmri.nii');
 mask_nii = fullfile(out_dir,'thalamus-mask.nii');
 networks_nii = fullfile(out_dir,'1000subjects_TightThalamus_clusters007_ref.nii');
 %thresholds = 0.01:0.01:0.9;
-thresholds = 0.1:0.05:0.8;
-density_range_for_avg = [0.1 0.15];
+thresholds = 0.1:0.1:0.8;
+density_range_for_avg = [0.05 0.20];
 
 
 %% Steps:
@@ -172,10 +172,6 @@ for r = [1 2 3]
 end  % ROI set
 
 
-%% FIXME Convert voxel results back to images and remove from results table
-% But show or capture histogram first
-
-
 %% Schaefer-only metrics
 % No extra tricks, just straightforward BCT computations. Add to same
 % results table
@@ -207,8 +203,23 @@ for t = 1:numel(thresholds)
 end
 
 
+%% FIXME Convert voxel results back to images and remove from results table
+% But show or capture histogram first
+vind = strcmp(result.ROI_Set,'voxel');
+result_voxel = result(vind,:);
+result = result(~vind,:);
 
 return
+
+% Limit voxelwise results to the density range we'll average over
+dkeeps = result_voxel.density >= min(density_range_for_avg) & ...
+    result_voxel.density <= max(density_range_for_avg);
+result_voxel_trimmed = result_voxel(dkeeps,:);
+
+% Average over densities for the stats of interest
+q = varfun(@mean,result_voxel_trimmed, ...
+    'InputVariables',{'roi_degree','roi_strength','roi_PC','roi_WMD'}, ...
+    'GroupingVariables','Region');
 
 
 %% Plots for a single ROI
