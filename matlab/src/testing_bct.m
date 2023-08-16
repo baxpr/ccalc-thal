@@ -222,6 +222,11 @@ q = varfun(@mean,result_voxel_trimmed, ...
     'GroupingVariables','Region');
 
 
+%% Look at WMD distribution for cortical ROIs
+k = abs(result.threshold-0.5)<0.001 & strcmp(result.ROI_Set,'Schaefer400');
+ksdensity(result.roi_WMD(k));
+
+
 %% Plots for a single ROI
 figure(1); clf
 

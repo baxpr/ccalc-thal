@@ -11,4 +11,4 @@ C = R;
 C(R<threshold) = 0;
 
 % Threshold and binarize
-C = double(R>=threshold);
+%C = double(R>=threshold);
