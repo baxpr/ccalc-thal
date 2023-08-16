@@ -28,8 +28,9 @@ wfmri_nii = fullfile(out_dir,'wfmri.nii');
 mask_nii = fullfile(out_dir,'thalamus-mask.nii');
 networks_nii = fullfile(out_dir,'1000subjects_TightThalamus_clusters007_ref.nii');
 %thresholds = 0.01:0.01:0.9;
-thresholds = 0.1:0.1:0.8;
+densities = 0.05:0.15:0.8;
 density_range_for_avg = [0.05 0.20];
+
 
 
 %% Steps:
@@ -93,6 +94,13 @@ communities_voxel = info_voxel.Network;
 
 
 %% Computations
+
+% Map densities to thresholds based on Schaefer400 cortical network
+R = get_network_matrix(table2array(data_schaefer),-inf);
+ind = triu(ones(size(R)),1);
+edges = R(logical(ind(:)));
+thresholds = quantile(edges,1-densities);
+
 % Add to results table a row at a time
 result = table();
 ct = 0;
@@ -132,7 +140,8 @@ for r = [1 2 3]
             
             [~,comp_sizes] = get_components(C);
             result.ncomponents(ct,1) = numel(comp_sizes);
-            result.density(ct,1) = density_und(C);
+            %result.density(ct,1) = density_und(C);
+            result.density(ct,1) = densities(t);
             
             degree = degrees_und(C);
             result.roi_degree(ct,1) = degree(end);
@@ -180,7 +189,8 @@ for t = 1:numel(thresholds)
     C = get_network_matrix(table2array(data_schaefer),thresholds(t));
     [~,comp_sizes] = get_components(C);
     ncomp = numel(comp_sizes);
-    density = density_und(C);
+    %density = density_und(C);
+    density = densities(t);
     degree = degrees_und(C);
     strength = strengths_und(C);
     PC = participation_coef(C,communities_schaefer);
