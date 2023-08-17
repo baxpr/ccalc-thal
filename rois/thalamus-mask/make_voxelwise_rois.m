@@ -30,5 +30,6 @@ info.Z = XYZthal(3,voxlist)';
 for v = 1:height(info)
     info.Network{v} = infonet.Network{info.NetworkNum(v)==infonet.NetworkNum};
 end
+writetable(info,'thalamus-voxelwise-labels.csv');
 
     
