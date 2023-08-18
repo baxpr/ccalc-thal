@@ -110,12 +110,12 @@ roi_img="${roi_dir}"/thalamus-mask/thalamus-voxelwise
 # Resample fMRI to ROI space is not needed (already done above)
 
 # Extract signals
-echo Yeo extract
+echo Yeo voxelwise extract
 fslmeants -i wfmri_yeo -o yeo-voxels.txt --label="${roi_img}"
 
 # Copy community info
 cp "${roi_img}-labels.csv" yeo-voxels-networks.csv
 
 # Convert to CSV and label appropriately
-echo Yeo reformat
+echo Yeo voxelwise reformat
 roi_to_csv.py yeo-voxels-networks.csv yeo-voxels.txt
