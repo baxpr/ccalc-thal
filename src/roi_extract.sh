@@ -25,16 +25,16 @@ echo THOMAS resample
 flirt -usesqform -applyxfm \
     -in fmri \
     -ref "${thomas_left}"/crop_t1 \
-    -out thomas_left
+    -out fmri_thomas_left
 flirt -usesqform -applyxfm \
     -in fmri \
     -ref "${thomas_right}"/crop_t1 \
-    -out thomas_right
+    -out fmri_thomas_right
 
 # Extract signals
 echo THOMAS extract
-fslmeants -i thomas_left -o thomas_left.txt --label="${thomas_left}"/thomas
-fslmeants -i thomas_right -o thomas_right.txt --label="${thomas_right}"/thomasr
+fslmeants -i fmri_thomas_left -o thomas_left.txt --label="${thomas_left}"/thomas
+fslmeants -i fmri_thomas_right -o thomas_right.txt --label="${thomas_right}"/thomasr
 
 # Convert to CSV and label appropriately
 echo THOMAS reformat
@@ -51,11 +51,11 @@ echo Schaefer resample
 flirt -usesqform -applyxfm \
     -in wfmri \
     -ref "${roi_img}" \
-    -out schaefer
+    -out wfmri_schaefer
 
 # Extract signals
 echo Schaefer extract
-fslmeants -i schaefer -o schaefer.txt --label="${roi_img}"
+fslmeants -i wfmri_schaefer -o schaefer.txt --label="${roi_img}"
 
 # Copy community info
 cp "${roi_img}-labels.csv" schaefer-networks.csv
@@ -88,11 +88,11 @@ echo Yeo resample
 flirt -usesqform -applyxfm \
     -in wfmri \
     -ref "${roi_img}" \
-    -out yeo
+    -out wfmri_yeo
 
 # Extract signals
 echo Yeo extract
-fslmeants -i yeo -o yeo.txt --label="${roi_img}"
+fslmeants -i wfmri_yeo -o yeo.txt --label="${roi_img}"
 
 # Copy community info
 cp "${roi_img}-labels.csv" yeo-networks.csv
@@ -101,3 +101,21 @@ cp "${roi_img}-labels.csv" yeo-networks.csv
 echo Yeo reformat
 roi_to_csv.py yeo-networks.csv yeo.txt
 
+
+## Yeo thalamus voxelwise ROIs (MNI space)
+
+# Hemispheres split
+roi_img="${roi_dir}"/thalamus-mask/thalamus-voxelwise
+
+# Resample fMRI to ROI space is not needed (already done above)
+
+# Extract signals
+echo Yeo extract
+fslmeants -i wfmri_yeo -o yeo-voxels.txt --label="${roi_img}"
+
+# Copy community info
+cp "${roi_img}-labels.csv" yeo-voxels-networks.csv
+
+# Convert to CSV and label appropriately
+echo Yeo reformat
+roi_to_csv.py yeo-voxels-networks.csv yeo-voxels.txt

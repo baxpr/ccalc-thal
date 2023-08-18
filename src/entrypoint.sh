@@ -32,15 +32,23 @@ done
 cp "${fmri_niigz}" "${out_dir}"/fmri.nii.gz
 cp "${wfmri_niigz}" "${out_dir}"/wfmri.nii.gz
 
+# Grab Yeo ROI images and masks (these all have the same geometry)
+# We don't need these for processing (we are getting them directly from rois dir)
+#cp "${roi_dir}"/thalamus-mask/thalamus-mask.nii.gz \
+#    "${roi_dir}"/thalamus-mask/thalamus-voxelwise.nii.gz \
+#    "${roi_dir}"/thalamus-mask/yeo7_thalamus_lr.nii.gz \
+#    "${out_dir}"
+
 # Grab whole-thalamus masks and resample to wfmri geometry
-flirt -usesqform -applyxfm \
-    -in "${roi_dir}"/thalamus-mask/thalamus-mask \
-    -ref "${out_dir}"/wfmri \
-    -out "${out_dir}"/thalamus-mask
-flirt -usesqform -applyxfm \
-    -in "${roi_dir}"/Yeo-thalamus/1000subjects_TightThalamus_clusters007_ref \
-    -ref "${out_dir}"/wfmri \
-    -out "${out_dir}"/1000subjects_TightThalamus_clusters007_ref
+# Actually don't need this - we are resampling the wfmri to the ROI geom later
+#flirt -usesqform -applyxfm \
+#    -in "${roi_dir}"/thalamus-mask/thalamus-mask \
+#    -ref "${out_dir}"/wfmri \
+#    -out "${out_dir}"/thalamus-mask
+#flirt -usesqform -applyxfm \
+#    -in "${roi_dir}"/Yeo-thalamus/1000subjects_TightThalamus_clusters007_ref \
+#    -ref "${out_dir}"/wfmri \
+#    -out "${out_dir}"/1000subjects_TightThalamus_clusters007_ref
 
 # ROI time series extraction
 roi_extract.sh
