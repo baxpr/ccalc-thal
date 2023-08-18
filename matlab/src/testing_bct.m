@@ -75,22 +75,25 @@ info_yeo = outerjoin( ...
     );
 communities_yeo = info_yeo.NetworkNum;
 
-% And for THOMAS
-% There are no community assignments so we assign NaN
+% And Yeo voxels
+data_voxel = readtable(fullfile(out_dir,'yeo-voxels.csv'));
+info_voxel = readtable(fullfile(out_dir,'yeo-voxels-networks.csv'));
+info_voxel = outerjoin( ...
+    table(data_voxel.Properties.VariableNames','VariableNames',{'Region'}), ...
+    info_voxel, ...
+    'Keys',{'Region'}, ...
+    'MergeKeys',true, ...
+    'Type','left' ...
+    );
+communities_voxel = info_voxel.NetworkNum;
+
+% And for THOMAS. There are no community assignments so we assign NaN
 data_thomas = readtable(fullfile(out_dir,'thomas.csv'));
 info_thomas = table( ...
     data_thomas.Properties.VariableNames', ...
     'VariableNames',{'Region'} ...
     );
 communities_thomas = nan(height(info_thomas),1);
-
-% And for thalamus voxels
-voxels_csv = fullfile(out_dir,'thalamusvoxels.csv');
-voxellabels_csv = fullfile(out_dir,'thalamusvoxels-labels.csv');
-voxels_to_csv(wfmri_nii,mask_nii,networks_nii,voxels_csv,voxellabels_csv);
-data_voxel = readtable(voxels_csv);
-info_voxel = readtable(voxellabels_csv);
-communities_voxel = info_voxel.Network;
 
 
 %% Computations
