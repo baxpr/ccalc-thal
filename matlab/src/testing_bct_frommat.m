@@ -98,18 +98,48 @@ communities_thomas = nan(height(info_thomas),1);
 
 %% Computations
 
-% Map densities to thresholds based on Schaefer400 cortical network
-R = get_network_matrix(data_schaefer,-inf);
-ind = triu(ones(size(R)),1);
-edges = R(logical(ind(:)));
-thresholds = quantile(edges,1-densities);
-
-% Add to results table a row at a time
+% Initialize so we can add to results table a row at a time
 result = table();
 ct = 0;
 
-% Which ROIs we will run on
-for r = [1 2]% 3]
+% Map densities to thresholds based on Schaefer400 cortical network
+R_schaefer = get_network_matrix(data_schaefer,-inf);
+ind = triu(ones(size(R_schaefer)),1);
+edges = R_schaefer(logical(ind(:)));
+thresholds = quantile(edges,1-densities);
+
+% Schaefer-only metrics at each threshold
+for t = 1:numel(thresholds)
+    
+    R_thresh = R_schaefer;
+    R_thresh(R_thresh(:)<thresholds(t)) = 0;
+            
+    [~,comp_sizes] = get_components(R_thresh);
+    ncomp = numel(comp_sizes);
+    density = densities(t);
+    degree = degrees_und(R_thresh);
+    strength = strengths_und(R_thresh);
+    PC = participation_coef(R_thresh,communities_schaefer);
+    WMD = module_degree_zscore(R_thresh,communities_schaefer);
+    
+    % Reshape into table organized by ROI
+    for k = 1:numel(PC)
+        ct = ct + 1;
+        result.threshold(ct,1) = thresholds(t);
+        result.ncomponents(ct,1) = ncomp;
+        result.density(ct,1) = density;
+        result.roi_degree(ct,1) = degree(k);
+        result.roi_strength(ct,1) = strength(k);
+        result.roi_PC(ct,1) = PC(k);
+        result.roi_WMD(ct,1) = WMD(k);
+        result.Region{ct,1} = data_schaefer.Properties.VariableNames{k};
+        result.ROI_Set{ct,1} = 'Schaefer400';
+    end
+    
+end
+
+% Thalamus ROIs one by one with Schaefer ROIs
+for r = [1 2 3]
     
     if r==1
         data_roi = data_yeo;
@@ -195,37 +225,9 @@ for r = [1 2]% 3]
 end  % ROI set
 
 
-%% Schaefer-only metrics
-FIXME % Update to work from R not time series data
-% No extra tricks, just straightforward BCT computations. Add to same
-% results table
-for t = 1:numel(thresholds)
-    
-    C = get_network_matrix(table2array(data_schaefer),thresholds(t));
-    [~,comp_sizes] = get_components(C);
-    ncomp = numel(comp_sizes);
-    %density = density_und(C);
-    density = densities(t);
-    degree = degrees_und(C);
-    strength = strengths_und(C);
-    PC = participation_coef(C,communities_schaefer);
-    WMD = module_degree_zscore(C,communities_schaefer);
-    
-    % Reshape into table organized by ROI
-    for k = 1:numel(PC)
-        ct = ct + 1;
-        result.threshold(ct,1) = thresholds(t);
-        result.ncomponents(ct,1) = ncomp;
-        result.density(ct,1) = density;
-        result.roi_degree(ct,1) = degree(k);
-        result.roi_strength(ct,1) = strength(k);
-        result.roi_PC(ct,1) = PC(k);
-        result.roi_WMD(ct,1) = WMD(k);
-        result.Region{ct,1} = data_schaefer.Properties.VariableNames{k};
-        result.ROI_Set{ct,1} = 'Schaefer400';
-    end
-    
-end
+
+return
+
 
 
 %% FIXME Convert voxel results back to images and remove from results table
@@ -234,7 +236,6 @@ vind = strcmp(result.ROI_Set,'voxel');
 result_voxel = result(vind,:);
 result = result(~vind,:);
 
-return
 
 % Limit voxelwise results to the density range we'll average over
 dkeeps = result_voxel.density >= min(density_range_for_avg) & ...
