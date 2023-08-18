@@ -125,11 +125,15 @@ for r = [1 2]% 3]
         roi_set = 'voxel';
     end
     
+    % Compute the full matrix incl Schaefer and save to file
     data_full = [data_schaefer data_roi];
     communities_full = [communities_schaefer; communities_roi];
     thal_labels = data_roi.Properties.VariableNames;
     [R,Rvarnames] = get_network_matrix(data_full,-inf);
-
+    saveR = array2table(R,'VariableNames',Rvarnames,'RowNames',Rvarnames);
+    writetable(saveR,fullfile(out_dir,['R_' roi_set '.csv']),'WriteRowNames',true);
+    
+    % Compute metrics for each thalamus ROI separately, at each threshold
     for this_index = 1:numel(thal_labels)
         
         % Keep all Schaefer but only one thalamus ROI in the matrix. The
