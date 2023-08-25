@@ -152,9 +152,10 @@ for r = [1 2 3]
     
     % Compute the full matrix incl Schaefer and save to file
     data_full = [data_schaefer data_roi];
-    communities_full = [communities_schaefer; communities_roi];
     R_csv = save_network_matrix(data_full,-inf,roi_set,out_dir);
-
+    communities_full = [communities_schaefer; communities_roi];
+    communities_csv = FIXME
+    
     % Read R matrix and variable names back from the file
     R = readtable(R_csv,'ReadRowNames',true);
     Rvarnames = R.Properties.VariableNames;
