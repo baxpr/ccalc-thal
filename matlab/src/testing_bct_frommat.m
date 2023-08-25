@@ -24,13 +24,8 @@
 %    Modularity
 
 out_dir = '../../OUTPUTS';
-wfmri_nii = fullfile(out_dir,'wfmri.nii');
-mask_nii = fullfile(out_dir,'thalamus-mask.nii');
-networks_nii = fullfile(out_dir,'1000subjects_TightThalamus_clusters007_ref.nii');
-%thresholds = 0.01:0.01:0.9;
+roi_dir = '../../rois';
 densities = 0.05:0.15:0.8;
-density_range_for_avg = [0.05 0.20];
-
 
 
 %% Steps:
@@ -224,6 +219,16 @@ for r = [1 2 3]
     
 end  % ROI set
 
+
+%% Write various outputs to image
+results_to_image( ...
+    result, ...
+    'roi_PC', ...
+    'Schaefer400', ...
+    fullfile(out_dir,'schaefer-networks.csv'), ...
+    fullfile(roi_dir,'Schaefer2018','Schaefer2018_400Parcels_7Networks_order_FSLMNI152_2mm.nii.gz'), ...
+    out_dir ...
+    );
 
 
 return
