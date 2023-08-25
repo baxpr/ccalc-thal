@@ -295,52 +295,41 @@ return
 
 
 
-%% Look at WMD distribution for cortical ROIs
-k = abs(result.threshold-0.5)<0.001 & strcmp(result.ROI_Set,'Schaefer400');
-ksdensity(result.roi_WMD(k));
+%% Look at histograms
+xwmd = -4:0.2:4;
+xpc = 0:0.01:1;
+dval = 0.35;
 
+k = abs(result.density-dval)<0.001 & strcmp(result.ROI_Set,'Schaefer400');
+f_wmd_schaefer = ksdensity(result.roi_WMD(k),xwmd);
+pcs = result.roi_PC(k);
+pcs = pcs(~isnan(pcs));
+f_pc_schaefer = ksdensity(pcs,xpc);
 
-%% Plots for a single ROI
+k = abs(result.density-dval)<0.001 & strcmp(result.ROI_Set,'voxel');
+f_wmd_voxel = ksdensity(result.roi_WMD(k),xwmd);
+pcs = result.roi_PC(k);
+pcs = pcs(~isnan(pcs));
+f_pc_voxel = ksdensity(pcs,xpc);
+
 figure(1); clf
 
-%xlim = [0.01 0.20];
-%xlim = [0.05 0.50];
+subplot(1,2,1); hold on
+plot(xwmd,f_wmd_schaefer/max(f_wmd_schaefer))
+plot(xwmd,f_wmd_voxel/max(f_wmd_voxel))
+legend({'Schaefer400 cortical ROIs','Thalamus voxels'},'Location','Best')
+xlabel('WMD')
+ylabel('Density of occurrence')
+title(sprintf('WMD at density %0.2f',dval))
 
-subplot(3,2,1)
-plot(result_this.density,result_this.threshold,'-o')
-xlabel('Density')
-ylabel('Threshold')
-set(gca,'XLim',xlim)
+subplot(1,2,2); hold on
+plot(xpc,f_pc_schaefer/max(f_pc_schaefer))
+plot(xpc,f_pc_voxel/max(f_pc_voxel))
+legend({'Schaefer400 cortical ROIs','Thalamus voxels'},'Location','Best')
+xlabel('PC')
+ylabel('Density of occurrence')
+title(sprintf('PC at density %0.2f',dval))
 
-subplot(3,2,2)
-plot(result_this.density,result_this.ncomponents,'-o')
-xlabel('Density')
-ylabel('Connected components')
-set(gca,'XLim',xlim)
-
-subplot(3,2,3)
-plot(result_this.density,result_this.roi_degree,'-o')
-xlabel('Density')
-ylabel('ROI Degree')
-set(gca,'XLim',xlim)
-
-subplot(3,2,4)
-plot(result_this.density,result_this.roi_strength,'-o')
-xlabel('Density')
-ylabel('ROI Strength')
-set(gca,'XLim',xlim)
-
-subplot(3,2,5)
-plot(result_this.density,result_this.roi_PC,'-o')
-xlabel('Density')
-ylabel('ROI PC')
-set(gca,'XLim',xlim)
-
-subplot(3,2,6)
-plot(result_this.density,result_this.roi_WMD,'-o')
-xlabel('Density')
-ylabel('ROI WMD')
-set(gca,'XLim',xlim)
 
 
 %% Summary plot for all Yeo7 ROIs
