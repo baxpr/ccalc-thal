@@ -114,7 +114,10 @@ for t = 1:numel(thresholds)
     density = densities(t);
     degree = degrees_und(R_thresh);
     strength = strengths_und(R_thresh);
-    PC = participation_coef(R_thresh,communities_schaefer);
+    PC = bct_participation_coef_nan(R_thresh,communities_schaefer);
+    nnw = numel(unique(communities_schaefer));
+    maxPC = 1 - (1/nnw)^2*nnw;
+    PC = PC ./ maxPC;
     WMD = module_degree_zscore(R_thresh,communities_schaefer);
     
     % Reshape into table organized by ROI
@@ -154,7 +157,7 @@ for r = [1 2 3]
     data_full = [data_schaefer data_roi];
     R_csv = save_network_matrix(data_full,-inf,roi_set,out_dir);
     communities_full = [communities_schaefer; communities_roi];
-    communities_csv = FIXME
+    %communities_csv = FIXME
     
     % Read R matrix and variable names back from the file
     R = readtable(R_csv,'ReadRowNames',true);
@@ -194,13 +197,18 @@ for r = [1 2 3]
             strength = strengths_und(R_this_thresh);
             result.roi_strength(ct,1) = strength(end);
             
-            % For PC, we are only capturing the value for the thalamus node, and
-            % the thalamus node's community assignment is irrelevant to its
-            % computation so we just choose 1 if it's not already specified.
+            % For PC, we are only capturing the value for the thalamus
+            % node, and the thalamus node's community assignment is
+            % irrelevant to its computation so we just choose 1 if it's not
+            % already specified. We also rescale P based on the number of
+            % communities so it will have a max of 1.
             if isnan(communities_roi(this_index))
                 communities_this(end) = 1;
             end
-            PC = participation_coef(R_this_thresh,communities_this);
+            PC = bct_participation_coef_nan(R_this_thresh,communities_this);
+            nnw = numel(unique(communities_this));
+            maxPC = 1 - (1/nnw)^2*nnw;
+            PC = PC ./ maxPC;
             result.roi_PC(ct,1) = PC(end);
             
             % For WMD, the thalamus node must be assigned to a particular
@@ -335,7 +343,7 @@ ylabel('ROI WMD')
 set(gca,'XLim',xlim)
 
 
-%% Summary plot for all ROIs
+%% Summary plot for all Yeo7 ROIs
 all_threshold = [];
 all_density = [];
 all_degree = [];
@@ -343,7 +351,7 @@ all_strength = [];
 all_PC = [];
 all_WMD = [];
 for r = unique(result.Region)'
-    d = result(strcmp(result.Region,r{1}),:);
+    d = result(strcmp(result.Region,r{1}) & strcmp(result.ROI_Set,'Yeo7'),:);
     d = sortrows(d,'threshold');
     all_threshold(end+1,:) = d.threshold';
     all_density(end+1,:) = d.density';

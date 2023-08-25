@@ -39,7 +39,10 @@ if isempty(test_rois)
         density = densities(t);
         degree = degrees_und(R_thresh);
         strength = strengths_und(R_thresh);
-        PC = participation_coef(R_thresh,communities);
+        PC = bct_participation_coef_nan(R_thresh,communities);
+        nnw = numel(unique(communities));
+        maxPC = 1 - (1/nnw)^2*nnw;
+        PC = PC ./ maxPC;
         WMD = module_degree_zscore(R_thresh,communities);
         
         % Reshape into table organized by ROI
@@ -101,7 +104,10 @@ for this_index = 1:numel(test_rois)
         if isnan(communities_roi(this_index))
             communities_this(end) = 1;
         end
-        PC = participation_coef(R_this_thresh,communities_this);
+        PC = bct_participation_coef_nan(R_this_thresh,communities_this);
+        nnw = numel(unique(communities_this));
+        maxPC = 1 - (1/nnw)^2*nnw;
+        PC = PC ./ maxPC;
         result.roi_PC(ct,1) = PC(end);
         
         % For WMD, the thalamus node must be assigned to a particular
