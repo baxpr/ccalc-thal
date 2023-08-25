@@ -156,7 +156,7 @@ for r = [1 2 3]
     R_csv = save_network_matrix(data_full,-inf,roi_set,out_dir);
 
     % Read R matrix and variable names back from the file
-    R = readtable(R_csv);
+    R = readtable(R_csv,'ReadRowNames',true);
     Rvarnames = R.Properties.VariableNames;
     R = table2array(R);
     
