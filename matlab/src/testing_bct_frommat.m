@@ -344,21 +344,24 @@ set(gca,'XLim',xlim)
 
 
 %% Summary plot for all Yeo7 ROIs
+resultp = result(strcmp(result.ROI_Set,'Yeo7'),:);
 all_threshold = [];
 all_density = [];
 all_degree = [];
 all_strength = [];
 all_PC = [];
 all_WMD = [];
-for r = unique(result.Region)'
-    d = result(strcmp(result.Region,r{1}) & strcmp(result.ROI_Set,'Yeo7'),:);
-    d = sortrows(d,'threshold');
+all_ncomponents = [];
+for r = unique(resultp.Region)'
+    d = resultp(strcmp(resultp.Region,r{1}),:);
+    d = sortrows(d,'density');
     all_threshold(end+1,:) = d.threshold';
     all_density(end+1,:) = d.density';
     all_degree(end+1,:) = d.roi_degree';
     all_strength(end+1,:) = d.roi_strength';
     all_PC(end+1,:) = d.roi_PC';
     all_WMD(end+1,:) = d.roi_WMD';
+    all_ncomponents(end+1,:) = d.ncomponents';
 end
 
 figure(2); clf
@@ -368,28 +371,34 @@ xlim = [0.01 0.80];
 
 for r = 1:size(all_density,1)
     
-    subplot(2,2,1); hold on
-    plot(all_density(r,:),all_degree(r,:))
+    subplot(3,2,1); hold on
+    plot(all_density(r,:),all_degree(r,:),'o-')
     xlabel('Density')
     ylabel('ROI Degree')
     set(gca,'XLim',xlim)
     
-    subplot(2,2,2); hold on
-    plot(all_density(r,:),all_strength(r,:))
+    subplot(3,2,2); hold on
+    plot(all_density(r,:),all_strength(r,:),'o-')
     xlabel('Density')
     ylabel('ROI Strength')
     set(gca,'XLim',xlim)
     
-    subplot(2,2,3); hold on
-    plot(all_density(r,:),all_PC(r,:))
+    subplot(3,2,3); hold on
+    plot(all_density(r,:),all_PC(r,:),'o-')
     xlabel('Density')
     ylabel('ROI PC')
     set(gca,'XLim',xlim)
     
-    subplot(2,2,4); hold on
-    plot(all_density(r,:),all_WMD(r,:))
+    subplot(3,2,4); hold on
+    plot(all_density(r,:),all_WMD(r,:),'o-')
     xlabel('Density')
     ylabel('ROI WMD')
     set(gca,'XLim',xlim)
     
+    subplot(3,2,5); hold on
+    plot(all_density(r,:),all_ncomponents(r,:),'o-')
+    xlabel('Density')
+    ylabel('Separate components')
+    set(gca,'XLim',xlim)
+
 end
