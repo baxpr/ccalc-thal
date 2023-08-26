@@ -97,12 +97,6 @@ communities_thomas = nan(height(info_thomas),1);
 result = table();
 ct = 0;
 
-% Map densities to thresholds based on Schaefer400 cortical network
-R_schaefer = get_network_matrix(data_schaefer,-inf);
-ind = triu(ones(size(R_schaefer)),1);
-edges = R_schaefer(logical(ind(:)));
-thresholds = quantile(edges,1-densities);
-
 % Schaefer-only metrics at each threshold
 for t = 1:numel(thresholds)
     
@@ -157,9 +151,11 @@ for r = [1 2 3]
     data_full = [data_schaefer data_roi];
     R_csv = save_network_matrix(data_full,-inf,roi_set,out_dir);
     communities_full = [communities_schaefer; communities_roi];
-    %communities_csv = FIXME
+    communities_csv = fullfile(out_dir,['R_' roi_set '-labels.csv']);
+    writetable(communities_full,communities_csv);
     
-    % Read R matrix and variable names back from the file
+    % Read R matrix and variable names and community info back from the
+    % file
     R = readtable(R_csv,'ReadRowNames',true);
     Rvarnames = R.Properties.VariableNames;
     R = table2array(R);
