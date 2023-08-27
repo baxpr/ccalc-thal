@@ -38,14 +38,14 @@ if numel(roisets)>2
 end
 
 % Map densities to thresholds based on Schaefer400 cortical network
-ind_schaefer = startsWith(Rvarnames,'schaefer400');
+ind_schaefer = startsWith(Rvarnames,'schaefer');
 R_schaefer = R(ind_schaefer,ind_schaefer);
 ind = triu(ones(size(R_schaefer)),1);
 edges = R_schaefer(logical(ind(:)));
 thresholds = quantile(edges,1-densities);
 
 % ROIs we will examine are all that don't begin 'schaefer'
-test_roiset = roisets{~strcmp(roisets,'schaefer400')};
+test_roiset = roisets{~strcmp(roisets,'schaefer')};
 test_rois = Rvarnames(~startsWith(Rvarnames,'schaefer'));
 
 % Initialize results to add one row at a time
@@ -121,25 +121,23 @@ for this_index = 1:numel(test_rois)
         strength = strengths_und(R_this_thresh);
         result.roi_strength(ct,1) = strength(end);
         
-        % For PC, we are only capturing the value for the thalamus
-        % node, and the thalamus node's community assignment is
-        % irrelevant to its computation so we just choose 1 if it's not
-        % already specified. We also rescale P based on the number of
-        % communities so it will have a max of 1.
-        FIXME % This next bit should not edit this bc confusing WMD?
-        if isnan(communities_roi(this_index))
-            communities_this(end) = 1;
-        end
-        PC = bct_participation_coef_nan(R_this_thresh,communities_this);
+        % For PC, we are only capturing the value for the thalamus node,
+        % and the thalamus node's community assignment is irrelevant to its
+        % computation, so we just assign 1 (it could be unknown/NaN for
+        % some ROI sets, e.g. THOMAS). We also rescale P based on the
+        % number of communities so it will have a max of 1.
+        communities_for_PC = communities_this;
+        communities_for_PC(end) = 1;
+        PC = bct_participation_coef_nan(R_this_thresh,communities_for_PC);
         nnw = numel(unique(communities_this));
         maxPC = 1 - (1/nnw)^2*nnw;
         PC = PC ./ maxPC;
         result.roi_PC(ct,1) = PC(end);
         
         % For WMD, the thalamus node must be assigned to a particular
-        % community, so if it's not specified we skip this metric (e.g. for
-        % THOMAS ROIs).
-        if isnan(communities_roi(this_index))
+        % community, so if any node does not have community specified, we
+        % skip this metric (e.g. for THOMAS ROIs).
+        if any(isnan(communities_this))
             result.roi_WMD(ct,1) = nan;
         else
             WMD = module_degree_zscore(R_this_thresh,communities_this);
