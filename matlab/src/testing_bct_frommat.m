@@ -56,7 +56,6 @@ info_schaefer = outerjoin( ...
     'MergeKeys',true, ...
     'Type','left' ...
     );
-communities_schaefer = info_schaefer.NetworkNum;
 
 % Same for Yeo ROIs
 data_yeo = readtable(fullfile(out_dir,'yeo.csv'));
@@ -68,7 +67,6 @@ info_yeo = outerjoin( ...
     'MergeKeys',true, ...
     'Type','left' ...
     );
-communities_yeo = info_yeo.NetworkNum;
 
 % And Yeo voxels
 data_voxel = readtable(fullfile(out_dir,'yeo-voxels.csv'));
@@ -80,7 +78,6 @@ info_voxel = outerjoin( ...
     'MergeKeys',true, ...
     'Type','left' ...
     );
-communities_voxel = info_voxel.NetworkNum;
 
 % And for THOMAS. There are no community assignments so we assign NaN
 data_thomas = readtable(fullfile(out_dir,'thomas.csv'));
@@ -88,7 +85,7 @@ info_thomas = table( ...
     data_thomas.Properties.VariableNames', ...
     'VariableNames',{'Region'} ...
     );
-communities_thomas = nan(height(info_thomas),1);
+info_thomas.NetworkNum(:,1) = nan;
 
 
 %% Computations
@@ -97,7 +94,40 @@ communities_thomas = nan(height(info_thomas),1);
 result = table();
 ct = 0;
 
-% Schaefer-only metrics at each threshold
+for r = [1 2 3]
+    
+    if r==1
+        data_roi = data_yeo;
+        info_roi = info_yeo;
+        roi_set = 'yeo7';
+    elseif r==2
+        data_roi = data_thomas;
+        info_roi = info_thomas;
+        roi_set = 'thom';
+    elseif r==3
+        data_roi = data_voxel;
+        info_roi = info_voxel;
+        roi_set = 'voxel';
+    end
+    
+    data_full = [data_schaefer data_roi];
+    R_csv = save_network_matrix(data_full,-inf,roi_set,out_dir);
+    info_full = [info_schaefer; info_roi];
+    info_csv = fullfile(out_dir,['R_' roi_set '-labels.csv']);
+    writetable(info_full,info_csv);
+
+    result = compute_metrics_on_matrix( ...
+        fullfile(out_dir,['R_' roi_set '.csv']), ...
+        fullfile(out_dir,['R_' roi_set '-labels.csv']), ...
+        densities ...
+        );
+
+end
+
+return
+
+
+%% PREVIOUS
 for t = 1:numel(thresholds)
     
     R_thresh = R_schaefer;
@@ -108,11 +138,11 @@ for t = 1:numel(thresholds)
     density = densities(t);
     degree = degrees_und(R_thresh);
     strength = strengths_und(R_thresh);
-    PC = bct_participation_coef_nan(R_thresh,communities_schaefer);
-    nnw = numel(unique(communities_schaefer));
+    PC = bct_participation_coef_nan(R_thresh,info_schaefer.NetworkNum);
+    nnw = numel(unique(info_schaefer.NetworkNum));
     maxPC = 1 - (1/nnw)^2*nnw;
     PC = PC ./ maxPC;
-    WMD = module_degree_zscore(R_thresh,communities_schaefer);
+    WMD = module_degree_zscore(R_thresh,info_schaefer.NetworkNum);
     
     % Reshape into table organized by ROI
     for k = 1:numel(PC)
@@ -135,30 +165,31 @@ for r = [1 2 3]
     
     if r==1
         data_roi = data_yeo;
-        communities_roi = communities_yeo;
+        info_roi = info_yeo;
         roi_set = 'Yeo7';
     elseif r==2
         data_roi = data_thomas;
-        communities_roi = communities_thomas;
+        info_roi = info_thomas;
         roi_set = 'THOMAS';
     elseif r==3
         data_roi = data_voxel;
-        communities_roi = communities_voxel;
+        info_roi = info_voxel;
         roi_set = 'voxel';
     end
     
     % Compute the full matrix incl Schaefer and save to file
     data_full = [data_schaefer data_roi];
     R_csv = save_network_matrix(data_full,-inf,roi_set,out_dir);
-    communities_full = [communities_schaefer; communities_roi];
-    communities_csv = fullfile(out_dir,['R_' roi_set '-labels.csv']);
-    writetable(communities_full,communities_csv);
+    info_full = [info_schaefer; info_roi];
+    info_csv = fullfile(out_dir,['R_' roi_set '-labels.csv']);
+    writetable(info_full,info_csv);
     
     % Read R matrix and variable names and community info back from the
     % file
     R = readtable(R_csv,'ReadRowNames',true);
     Rvarnames = R.Properties.VariableNames;
     R = table2array(R);
+    info = readtable(info_csv);
     
     % ROIs we will examine are all that don't begin 'schaefer'
     test_rois = Rvarnames(~startsWith(Rvarnames,'schaefer'));
