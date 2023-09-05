@@ -367,7 +367,7 @@ title(sprintf('PC at density %0.2f',dval))
 
 
 %% Summary plot for all Yeo7 ROIs
-resultp = result(strcmp(result.ROI_Set,'Yeo7'),:);
+resultp = result(strcmp(result.ROI_Set,'yeo7'),:);
 all_threshold = [];
 all_density = [];
 all_degree = [];
