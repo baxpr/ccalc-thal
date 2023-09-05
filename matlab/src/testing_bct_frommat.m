@@ -113,7 +113,7 @@ for r = [1 2]% 3]
     end
     
     data_full = [data_schaefer data_roi];
-    R_csv = save_network_matrix(data_full,-inf,roi_set,out_dir);
+    R_csv = save_network_matrix(data_full,roi_set,out_dir);
     info_full = [info_schaefer; info_roi];
     info_csv = fullfile(out_dir,['R_' roi_set '-labels.csv']);
     writetable(info_full,info_csv);
@@ -186,7 +186,7 @@ for r = [1 2 3]
     
     % Compute the full matrix incl Schaefer and save to file
     data_full = [data_schaefer data_roi];
-    R_csv = save_network_matrix(data_full,-inf,roi_set,out_dir);
+    R_csv = save_network_matrix(data_full,roi_set,out_dir);
     info_full = [info_schaefer; info_roi];
     info_csv = fullfile(out_dir,['R_' roi_set '-labels.csv']);
     writetable(info_full,info_csv);
