@@ -7,11 +7,10 @@ R = corr(table2array(data));
 R = R - R.*eye(size(R));
 
 % Threshold only
-C = R;
-C(R<threshold) = 0;
+R(R<threshold) = 0;
 
 % Additionally, binarize
-%C = double(R>=threshold);
+%R = double(R>=threshold);
 
 % Get variable names
 Rvarnames = data.Properties.VariableNames;
