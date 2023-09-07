@@ -13,6 +13,8 @@ R_schaefer = get_network_matrix_1(schaefer.data);
 
 % Compute partial R for Schaefer x Thalamus for each thalamus set and save
 Rp_schaefer_yeo = get_partial_matrix_2(schaefer.data,yeo.data);
+Rp_schaefer_voxel = get_partial_matrix_2(schaefer.data,voxel.data);
+Rp_schaefer_thomas = get_partial_matrix_2(schaefer.data,thomas.data);
 
 
 % Compute PC at each density threshold for the Schaefer x Thalamus matrices
