@@ -1,6 +1,6 @@
 % Compute metrics from
 %    schaefer-schaefer pearson correlation matrix
-%      and
+%       and
 %    schaefer-thalamus partial correlation matrix
 
 out_dir = '../../OUTPUTS';
@@ -9,8 +9,10 @@ out_dir = '../../OUTPUTS';
 [schaefer,yeo,voxel,thomas] = get_time_series(out_dir);
 
 % Compute Pearson R for Schaefer x Schaefer (cortical) ROIs and save
+R_schaefer = get_network_matrix_1(schaefer.data);
 
 % Compute partial R for Schaefer x Thalamus for each thalamus set and save
+Rp_schaefer_yeo = get_partial_matrix_2(schaefer.data,yeo.data);
 
 
 % Compute PC at each density threshold for the Schaefer x Thalamus matrices
