@@ -4,7 +4,7 @@
 %    schaefer-thalamus partial correlation matrix
 
 out_dir = '../../OUTPUTS';
-densities = 0:0.05:0.8;
+densities = 0:0.025:0.8;
 
 % Get the time series data and ROI info previously created by
 % roi_extract.sh
@@ -46,12 +46,12 @@ figure(1); clf
 for r = 1:size(all_density,1)
     
     subplot(1,2,1); hold on
-    plot(all_density(r,:),all_degree(r,:),'-o')
+    plot(all_density(r,:),all_degree(r,:),'-')
     xlabel('Density')
     ylabel('ROI Degree')
 
     subplot(1,2,2); hold on
-    plot(all_density(r,:),all_scaledPC(r,:),'-o')
+    plot(all_density(r,:),all_scaledPC(r,:),'-')
     xlabel('Density')
     ylabel('ROI scaledPC')
     
