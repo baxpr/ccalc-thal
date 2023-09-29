@@ -4,7 +4,7 @@
 %    schaefer-thalamus partial correlation matrix
 
 out_dir = '../../OUTPUTS';
-densities = 0:0.005:0.1;
+densities = 0:0.05:0.8;
 
 % Get the time series data and ROI info previously created by
 % roi_extract.sh
@@ -14,9 +14,14 @@ densities = 0:0.005:0.1;
 R_schaefer = get_network_matrix_1(schaefer);
 
 % Compute partial R for Schaefer x Thalamus for each thalamus set and save
-Rp_schaefer_yeo = get_partial_matrix_2(schaefer,yeo);
-Rp_schaefer_voxel = get_partial_matrix_2(schaefer,voxel);
-Rp_schaefer_thomas = get_partial_matrix_2(schaefer,thomas);
+Rp_schaefer_yeo = get_partial_matrix_2(schaefer,yeo,95);
+Rp_schaefer_voxel = get_partial_matrix_2(schaefer,voxel,95);
+Rp_schaefer_thomas = get_partial_matrix_2(schaefer,thomas,95);
+
+% Also standard bivariate correlation
+R_schaefer_yeo = get_partial_matrix_2(schaefer,yeo,inf);
+R_schaefer_voxel = get_partial_matrix_2(schaefer,voxel,inf);
+R_schaefer_thomas = get_partial_matrix_2(schaefer,thomas,inf);
 
 
 %% 
