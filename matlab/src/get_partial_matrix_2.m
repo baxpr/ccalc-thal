@@ -2,7 +2,7 @@ function Rstruct = get_partial_matrix_2(schaefer,thal)
 
 warning('off','stats:pca:ColRankDefX');
 
-Rp = nan(width(thal.data),width(schaefer.data));
+R = nan(width(thal.data),width(schaefer.data));
 
 for s = 1:width(schaefer.data)
 
@@ -19,12 +19,12 @@ for s = 1:width(schaefer.data)
     z = ess(:,z_inds);
     
     % Compute partial correlation
-    Rp(:,s) = partialcorr(thal.data{:,:},schaefer.data{:,s},z);
+    R(:,s) = partialcorr(thal.data{:,:},schaefer.data{:,s},z);
     
 end
 
-Rstruct.Rp = array2table( ...
-    Rp, ...
+Rstruct.R = array2table( ...
+    R, ...
     'VariableNames',schaefer.data.Properties.VariableNames, ...
     'RowNames',thal.data.Properties.VariableNames ...
     );
