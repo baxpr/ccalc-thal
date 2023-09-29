@@ -20,8 +20,8 @@ Rp_schaefer_thomas = get_partial_matrix_2(schaefer,thomas);
 
 
 %% 
-
 % Compute PC at each density threshold for the Schaefer x Thalamus matrices
+% FIXME reorg into the result structure of testing_bct.m
 PC_yeo = compute_PCs(Rp_schaefer_yeo,densities);
 
 % Compute WMD
