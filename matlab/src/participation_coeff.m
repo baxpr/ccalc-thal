@@ -1,4 +1,4 @@
-function PC = participation_coeff(K,Network)
+function [PC,scaledPC] = participation_coeff(K,Network)
 % Participation coefficient.
 %
 % Hwang K, Bertolero MA, Liu WB, D'Esposito M. The Human Thalamus Is an
@@ -30,5 +30,5 @@ for s = 1:nnw
     PC = PC - ( sum(K .* strcmp(Network,networks{s})) ./ sum(K) ) .^ 2;
 end
 maxPC = 1 - (1/nnw)^2*nnw;
-PC = PC ./ maxPC;
+scaledPC = PC ./ maxPC;
 
