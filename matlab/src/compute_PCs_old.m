@@ -1,4 +1,4 @@
-function compute_PCs(thal)
+function compute_PCs(inp,roi1_csv,roi2_csv,roi1_labels,tag)
 
 % Compute connectivity matrix
 [R,rownames,colnames] = compute_connmat( ...
