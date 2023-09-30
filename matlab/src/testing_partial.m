@@ -26,15 +26,22 @@ R_schaefer_thomas = get_partial_matrix_2(schaefer,thomas,inf);
 
 %% 
 % Compute PC at each density threshold for the Schaefer x Thalamus matrices
-result = compute_PCs(Rp_schaefer_yeo,densities);
+PCp_yeo = compute_PCs(Rp_schaefer_yeo,densities);
+PCp_thomas = compute_PCs(Rp_schaefer_thomas,densities);
+%PCp_voxel = compute_PCs(Rp_schaefer_voxel,densities);  % 33 dens 3 min 
+
+PC_yeo = compute_PCs(R_schaefer_yeo,densities);
+PC_thomas = compute_PCs(R_schaefer_thomas,densities);
+%PC_voxel = compute_PCs(R_schaefer_voxel,densities);
 
 
 %% Summary plot for all ROIs
+PCresult = PCp_yeo;
 all_density = [];
 all_degree = [];
 all_scaledPC = [];
-for r = unique(result.Region)'
-    d = result(strcmp(result.Region,r{1}),:);
+for r = unique(PCresult.Region)'
+    d = PCresult(strcmp(PCresult.Region,r{1}),:);
     d = sortrows(d,'density');
     all_density(end+1,:) = d.density';
     all_degree(end+1,:) = d.roi_degree';

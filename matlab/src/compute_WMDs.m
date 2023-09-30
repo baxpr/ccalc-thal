@@ -1,43 +1,43 @@
-function compute_WMDs(inp,roi1_csv,roi2_csv,roi1_labels,tag)
+function compute_WMDs(Rschaefer,Rthal,densities)
 
-% Compute connectivity matrix
-[R,rownames,colnames] = compute_connmat( ...
-    roi1_csv, ...
-    roi2_csv, ...
-    inp.connmetric, ...
-    inp.out_dir, ...
-    tag);
+% Computes within-module degree for the thalamus regions for an incomplete
+% thalamus x schaefer (partial) correlation matrix, at a range of
+% densities. Normalized using the schaefer x schaefer correlation matrix.
+% Matrices are binarized.
 
-% Verify labels and data match for roi1
-if ~all(strcmp(rownames',roi1_labels.Region))
-    error('Mismatch in region labels')
+% Check that matrices are in the same order on the schaefer axes
+if ~all(strcmp(Rschaefer.rowinfo.Region,Rschaefer.colinfo.Region))
+    error('Schaefer rows/cols not matching')
+end
+if ~all(strcmp(Rthal.colinfo.Region,Rschaefer.colinfo.Region))
+    error('Schaefer/thalamus cols not matching')
+end
+
+% Identify networks
+networks = unique(Rschaefer.colinfo.Network);
+nnw = numel(networks);
+if ~all(strcmp(networks,Rthal.colinfo.Network))
+    error('Network name mismatch')
 end
 
 
-% FIXME WIP 
+% Loop over densities
 
-% Should only work for same ROI set on both axes of the matrix
-%
-% Do we zero the diagonal?
-%
-% Do we need to exclude thalamus ROIs/voxels other than the one we're
-% computing WMD for?
+% Separately threshold and binarize the correlation matrices at density d
+thisRschaefer = table2array(Rschaefer.R);
+thisRschaefer = double(thisRschaefer >= quantile(thisRschaefer(:),1-d));
+thisRthal = table2array(Rthal.R);
+thisRthal = double(thisRthal >= quantile(thisRthal(:),1-d));
 
-
-% WMD
-densities = eval(inp.densities);
-WMDs = [];
-for d = densities
-    thisR = Rmat;
-
-    % Zero edges below threshold but retain weights of those above
-    thisR(thisR(:) < quantile(thisR(:),1-d)) = 0;
-    
-    % Or just binarize
-    %thisR = double(thisR >= quantile(thisR(:),1-d));
-    
-    WMDs = [WMDs; module_degree_zscore(thisR,roi1_labels.Network)];
+% Compute normalizing factor (mean and SD of edge count for each network).
+% FIXME need to remove self-connections from the computations.
+CW = nan(nnw,1);
+sCW = nan(nnw,1);
+for n = 1:nnw
+    innetwork = strcmp(Rschaefer.colinfo.Network,networks{n});
+    edgecounts = sum(thisRschaefer(innetwork,innetwork));
+    CW(n) = mean(edgecounts);
+    sCW(n) = std(edgecounts);
 end
 
-%Z = module_degree_zscore(connmat,networks,0);
 
