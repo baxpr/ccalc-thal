@@ -29,15 +29,21 @@ thisRschaefer = double(thisRschaefer >= quantile(thisRschaefer(:),1-d));
 thisRthal = table2array(Rthal.R);
 thisRthal = double(thisRthal >= quantile(thisRthal(:),1-d));
 
-% Compute normalizing factor (mean and SD of edge count for each network).
-% FIXME need to remove self-connections from the computations.
+% Compute normalizing factor (mean and SD of edge counts for each network).
+% Some gymnastics to remove self-connections.
 CW = nan(nnw,1);
 sCW = nan(nnw,1);
-for n = 1:nnw
-    innetwork = strcmp(Rschaefer.colinfo.Network,networks{n});
-    edgecounts = sum(thisRschaefer(innetwork,innetwork));
-    CW(n) = mean(edgecounts);
-    sCW(n) = std(edgecounts);
+for nw = 1:nnw
+    innetwork = strcmp(Rschaefer.colinfo.Network,networks{nw});
+    Rinnetwork = thisRschaefer(innetwork,innetwork);
+    edgevals = [];
+    for node = 1:size(Rinnetwork,2)
+        edgevals(:,node) = Rinnetwork([1:node-1 node+1:end],node);
+    end
+    CW(nw) = mean(edgevals);
+    sCW(nw) = std(edgevals);
 end
 
+% Compute WMD for each thalamus ROI
+WMDs = [];
 
