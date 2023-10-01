@@ -39,56 +39,57 @@ PC_thomas = compute_PCs(R_schaefer_thomas,densities);
 WMD_yeo = compute_WMDs(R_schaefer,R_schaefer_yeo,densities);
 WMDp_yeo = compute_WMDs(R_schaefer,Rp_schaefer_yeo,densities);
 
+% Merge
+result_yeo = outerjoin( ...
+    PC_yeo, ...
+    WMD_yeo, ...
+    'MergeKeys',true, ...
+    'Keys',{'Region','ROI_Set','density'}, ...
+    'Type','full' ...
+    );
+resultp_yeo = outerjoin( ...
+    PCp_yeo, ...
+    WMDp_yeo, ...
+    'MergeKeys',true, ...
+    'Keys',{'Region','ROI_Set','density'}, ...
+    'Type','full' ...
+    );
 
 
 % Summary plot for all ROIs
-PCresult = PCp_yeo;
+result = resultp_yeo;
 all_density = [];
 all_degree = [];
 all_scaledPC = [];
-for r = unique(PCresult.Region)'
-    d = PCresult(strcmp(PCresult.Region,r{1}),:);
+all_WMD = [];
+for r = unique(result.Region)'
+    d = result(strcmp(result.Region,r{1}),:);
     d = sortrows(d,'density');
     all_density(end+1,:) = d.density';
     all_degree(end+1,:) = d.roi_degree';
     all_scaledPC(end+1,:) = d.roi_scaledPC';
+    all_WMD(end+1,:) = d.roi_WMD';
 end
 
 figure(1); clf
 
 for r = 1:size(all_density,1)
     
-    subplot(1,2,1); hold on
+    subplot(1,3,1); hold on
     plot(all_density(r,:),all_degree(r,:),'-')
     xlabel('Density')
     ylabel('ROI Degree')
 
-    subplot(1,2,2); hold on
+    subplot(1,3,2); hold on
     plot(all_density(r,:),all_scaledPC(r,:),'-')
     xlabel('Density')
     ylabel('ROI scaledPC')
-    
-end
+    title(sprintf('%s ROI set',result.ROI_Set{1}))
 
-
-WMDresult = WMD_yeo;
-all_density = [];
-all_WMD = [];
-for r = unique(WMDresult.Region)'
-    d = WMDresult(strcmp(WMDresult.Region,r{1}),:);
-    d = sortrows(d,'density');
-    all_density(end+1,:) = d.density';
-    all_WMD(end+1,:) = d.roi_WMD';
-end
-
-figure(2); clf
-
-for r = 1:size(all_density,1)
-    
-    subplot(1,1,1); hold on
+    subplot(1,3,3); hold on
     plot(all_density(r,:),all_WMD(r,:),'-')
     xlabel('Density')
     ylabel('ROI WMD')
-    title(sprintf('%s ROI set',WMDresult.ROI_Set{1}))
 
 end
+
