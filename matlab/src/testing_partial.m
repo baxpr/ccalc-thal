@@ -89,5 +89,6 @@ for r = 1:size(all_density,1)
     plot(all_density(r,:),all_WMD(r,:),'-')
     xlabel('Density')
     ylabel('ROI WMD')
+    title(sprintf('%s ROI set',WMDresult.ROI_Set{1}))
 
 end
