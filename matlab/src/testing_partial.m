@@ -72,6 +72,7 @@ for r = unique(result.Region)'
 end
 
 figure(1); clf
+xlim = [min(densities)-0.05 max(densities)+0.05];
 
 for r = 1:size(all_density,1)
     
@@ -79,17 +80,20 @@ for r = 1:size(all_density,1)
     plot(all_density(r,:),all_degree(r,:),'-')
     xlabel('Density')
     ylabel('ROI Degree')
+    set(gca,'XLim',xlim)
 
     subplot(1,3,2); hold on
     plot(all_density(r,:),all_scaledPC(r,:),'-')
     xlabel('Density')
     ylabel('ROI scaledPC')
     title(sprintf('%s ROI set',result.ROI_Set{1}))
+    set(gca,'XLim',xlim)
 
     subplot(1,3,3); hold on
     plot(all_density(r,:),all_WMD(r,:),'-')
     xlabel('Density')
     ylabel('ROI WMD')
+    set(gca,'XLim',xlim)
 
 end
 
