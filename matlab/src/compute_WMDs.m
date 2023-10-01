@@ -58,5 +58,6 @@ end
 WMDs = (K - CW) ./ sCW;
 
 % Reformat result
+result = WMDs;
 
 
