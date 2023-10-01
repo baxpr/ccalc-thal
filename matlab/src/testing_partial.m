@@ -4,7 +4,7 @@
 %    schaefer-thalamus partial correlation matrix
 
 out_dir = '../../OUTPUTS';
-densities = 0:0.025:0.8;
+densities = 0.05:0.05:0.8;
 
 % Get the time series data and ROI info previously created by
 % roi_extract.sh
@@ -35,13 +35,13 @@ PC_thomas = compute_PCs(R_schaefer_thomas,densities);
 %PC_voxel = compute_PCs(R_schaefer_voxel,densities);
 
 
-%% WMD
+% WMD
 WMD_yeo = compute_WMDs(R_schaefer,R_schaefer_yeo,densities);
 WMDp_yeo = compute_WMDs(R_schaefer,Rp_schaefer_yeo,densities);
 
 
 
-%% Summary plot for all ROIs
+% Summary plot for all ROIs
 PCresult = PCp_yeo;
 all_density = [];
 all_degree = [];
@@ -71,7 +71,7 @@ for r = 1:size(all_density,1)
 end
 
 
-WMDresult = WMDp_yeo;
+WMDresult = WMD_yeo;
 all_density = [];
 all_WMD = [];
 for r = unique(WMDresult.Region)'
