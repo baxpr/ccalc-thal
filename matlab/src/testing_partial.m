@@ -35,6 +35,12 @@ PC_thomas = compute_PCs(R_schaefer_thomas,densities);
 %PC_voxel = compute_PCs(R_schaefer_voxel,densities);
 
 
+%% WMD
+WMD_yeo = compute_WMDs(R_schaefer,R_schaefer_yeo,densities);
+WMDp_yeo = compute_WMDs(R_schaefer,Rp_schaefer_yeo,densities);
+
+
+
 %% Summary plot for all ROIs
 PCresult = PCp_yeo;
 all_density = [];
@@ -62,5 +68,26 @@ for r = 1:size(all_density,1)
     xlabel('Density')
     ylabel('ROI scaledPC')
     
+end
+
+
+WMDresult = WMDp_yeo;
+all_density = [];
+all_WMD = [];
+for r = unique(WMDresult.Region)'
+    d = WMDresult(strcmp(WMDresult.Region,r{1}),:);
+    d = sortrows(d,'density');
+    all_density(end+1,:) = d.density';
+    all_WMD(end+1,:) = d.roi_WMD';
+end
+
+figure(2); clf
+
+for r = 1:size(all_density,1)
     
+    subplot(1,1,1); hold on
+    plot(all_density(r,:),all_WMD(r,:),'-')
+    xlabel('Density')
+    ylabel('ROI WMD')
+
 end

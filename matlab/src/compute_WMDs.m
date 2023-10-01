@@ -20,8 +20,12 @@ if ~all(strcmp(networks,unique(Rthal.colinfo.Network)))
     error('Network name mismatch')
 end
 
+q = strsplit(Rthal.rowinfo.Region{1},'_');
+roiset = q{1};
 
 % Loop over densities
+result = table();
+ct = 0;
 for d = densities
 
     % Separately threshold and binarize the correlation matrices at density d
@@ -32,32 +36,36 @@ for d = densities
 
     % Compute normalizing factor (mean and SD of edge counts for each network).
     % Some gymnastics to remove self-connections.
-    % 
+    %
     % Also compute K, the count (sum) of within-network edges for each
     % thalamus ROI, each network.
-    CW = nan(1,nnw);
-    sCW = nan(1,nnw);
-    K = nan(size(thisRthal,1),nnw);
+    %
+    % Finally, WMD.
     for nw = 1:nnw
-        innetwork = strcmp(Rschaefer.colinfo.Network,networks{nw});
-        Rinnetwork = thisRschaefer(innetwork,innetwork);
-        edgevals = [];
-        for node = 1:size(Rinnetwork,2)
-            edgevals(:,node) = Rinnetwork([1:node-1 node+1:end],node);
+        inschaefer = find(strcmp(Rschaefer.colinfo.Network,networks{nw}));
+        inthal = find(strcmp(Rthal.rowinfo.Network,networks{nw}));
+        thisRschaefer_nw = thisRschaefer(inschaefer,inschaefer);
+        thisRthal_nw = thisRthal(inthal,inschaefer);
+        schaeferedges = [];
+        for node = 1:size(thisRschaefer_nw,2)
+            schaeferedges(:,node) = thisRschaefer_nw([1:node-1 node+1:end],node);
         end
-        CW(nw) = mean(sum(edgevals));
-        sCW(nw) = std(sum(edgevals));
 
-        K(:,nw) = sum(thisRthal(:,innetwork),2);
+        CW = mean(sum(schaeferedges));
+        sCW = std(sum(schaeferedges));
+        K = sum(thisRthal_nw,2);
+        WMD = (K - CW) / sCW;
+
+        for r = 1:size(WMD,1)
+            ct = ct + 1;
+            result.Region{ct,1} = Rthal.rowinfo.Region{inthal(r)};
+            result.ROI_Set{ct,1} = roiset;
+            result.density(ct,1) = d;
+            result.roi_WMD(ct,1) = WMD(r);
+        end
+
     end
 
 end
-
-% Compute WMDs. Using recent matlab's ability to broadcast (replicate)
-% across a dimension with size 1.
-WMDs = (K - CW) ./ sCW;
-
-% Reformat result
-result = WMDs;
 
 
