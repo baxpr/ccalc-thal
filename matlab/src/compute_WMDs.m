@@ -1,4 +1,4 @@
-function compute_WMDs(Rschaefer,Rthal,densities)
+function result = compute_WMDs(Rschaefer,Rthal,densities)
 
 % Computes within-module degree for the thalamus regions for an incomplete
 % thalamus x schaefer (partial) correlation matrix, at a range of
@@ -16,34 +16,46 @@ end
 % Identify networks
 networks = unique(Rschaefer.colinfo.Network);
 nnw = numel(networks);
-if ~all(strcmp(networks,Rthal.colinfo.Network))
+if ~all(strcmp(networks,unique(Rthal.colinfo.Network)))
     error('Network name mismatch')
 end
 
 
 % Loop over densities
+for d = densities
 
-% Separately threshold and binarize the correlation matrices at density d
-thisRschaefer = table2array(Rschaefer.R);
-thisRschaefer = double(thisRschaefer >= quantile(thisRschaefer(:),1-d));
-thisRthal = table2array(Rthal.R);
-thisRthal = double(thisRthal >= quantile(thisRthal(:),1-d));
+    % Separately threshold and binarize the correlation matrices at density d
+    thisRschaefer = table2array(Rschaefer.R);
+    thisRschaefer = double(thisRschaefer >= quantile(thisRschaefer(:),1-d));
+    thisRthal = table2array(Rthal.R);
+    thisRthal = double(thisRthal >= quantile(thisRthal(:),1-d));
 
-% Compute normalizing factor (mean and SD of edge counts for each network).
-% Some gymnastics to remove self-connections.
-CW = nan(nnw,1);
-sCW = nan(nnw,1);
-for nw = 1:nnw
-    innetwork = strcmp(Rschaefer.colinfo.Network,networks{nw});
-    Rinnetwork = thisRschaefer(innetwork,innetwork);
-    edgevals = [];
-    for node = 1:size(Rinnetwork,2)
-        edgevals(:,node) = Rinnetwork([1:node-1 node+1:end],node);
+    % Compute normalizing factor (mean and SD of edge counts for each network).
+    % Some gymnastics to remove self-connections.
+    % 
+    % Also compute K, the count (sum) of within-network edges for each
+    % thalamus ROI, each network.
+    CW = nan(1,nnw);
+    sCW = nan(1,nnw);
+    K = nan(size(thisRthal,1),nnw);
+    for nw = 1:nnw
+        innetwork = strcmp(Rschaefer.colinfo.Network,networks{nw});
+        Rinnetwork = thisRschaefer(innetwork,innetwork);
+        edgevals = [];
+        for node = 1:size(Rinnetwork,2)
+            edgevals(:,node) = Rinnetwork([1:node-1 node+1:end],node);
+        end
+        CW(nw) = mean(sum(edgevals));
+        sCW(nw) = std(sum(edgevals));
+
+        K(:,nw) = sum(thisRthal(:,innetwork),2);
     end
-    CW(nw) = mean(edgevals);
-    sCW(nw) = std(edgevals);
+
 end
 
-% Compute WMD for each thalamus ROI
-WMDs = [];
+% Compute WMDs
+WMDs = (K - CW) ./ sCW;
+
+% Reformat result
+
 
