@@ -53,7 +53,8 @@ for d = densities
 
 end
 
-% Compute WMDs
+% Compute WMDs. Using recent matlab's ability to broadcast (replicate)
+% across a dimension with size 1.
 WMDs = (K - CW) ./ sCW;
 
 % Reformat result
