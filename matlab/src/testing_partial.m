@@ -24,12 +24,29 @@ R_schaefer_yeo = get_partial_matrix_2(schaefer,yeo,inf);
 R_schaefer_voxel = get_partial_matrix_2(schaefer,voxel,inf);
 R_schaefer_thomas = get_partial_matrix_2(schaefer,thomas,inf);
 
-% FIXME Save R matrices and associated region info to csv files
+
+%% Save R matrices and associated region info to csv files
+mat_dir = fullfile(out_dir,'matrices');
+if ~exist(mat_dir,'dir'), mkdir(mat_dir); end
+for m = {
+    'R_schaefer'
+    'R_schaefer_yeo'
+    'R_schaefer_thomas'
+    'Rp_schaefer_yeo'
+    'Rp_schaefer_thomas'
+    }'
+    eval(['mval = ' m{1} ';']);  % Hack to use var name AND value
+    mat_fname = fullfile(mat_dir,[m{1} '.csv']);
+    rowinfo_fname = fullfile(mat_dir,[m{1} '-rowinfo.csv']);
+    colinfo_fname = fullfile(mat_dir,[m{1} '-colinfo.csv']);
+    writetable(mval.R,mat_fname,'WriteRowNames',true);
+    writetable(mval.rowinfo,rowinfo_fname);
+    writetable(mval.colinfo,colinfo_fname);
+end
 
 
 %% 
 % Compute PC at each density threshold for the Schaefer x Thalamus matrices
-tic
 PCp_yeo = compute_PCs(Rp_schaefer_yeo,densities);
 PCp_thomas = compute_PCs(Rp_schaefer_thomas,densities);
 PCp_voxel = compute_PCs(Rp_schaefer_voxel,densities);
@@ -37,15 +54,12 @@ PCp_voxel = compute_PCs(Rp_schaefer_voxel,densities);
 PC_yeo = compute_PCs(R_schaefer_yeo,densities);
 PC_thomas = compute_PCs(R_schaefer_thomas,densities);
 PC_voxel = compute_PCs(R_schaefer_voxel,densities);
-toc  % 16 densities 90 sec
 
 % WMD
-tic
 WMD_yeo = compute_WMDs(R_schaefer,R_schaefer_yeo,densities);
 WMD_voxel = compute_WMDs(R_schaefer,R_schaefer_voxel,densities);
 WMDp_yeo = compute_WMDs(R_schaefer,Rp_schaefer_yeo,densities);
 WMDp_voxel = compute_WMDs(R_schaefer,Rp_schaefer_voxel,densities);
-toc  % 16 densities 50 sec
 
 
 % Merge WMD into PC table
