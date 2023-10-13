@@ -1,4 +1,4 @@
-function results_to_image(result,stat,roi_set,roi_csv,roi_nii,out_dir)
+function results_to_image(result,stat,roi_set,roi_csv,roi_nii,img_dir)
 
 % String tag with density value to label files with
 result.dtag = arrayfun(@(x) strrep(sprintf('%0.3f',x),'.','p'), ...
@@ -12,7 +12,6 @@ Vroi = spm_vol(roi_nii);
 Yroi = spm_read_vols(Vroi);
 
 % Output images
-img_dir = fullfile(out_dir,'statimgs');
 if ~exist(img_dir,'dir'), mkdir(img_dir); end
 
 densities = unique(result.density);
