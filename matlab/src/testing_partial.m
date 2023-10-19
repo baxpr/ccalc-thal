@@ -8,6 +8,10 @@ roi_dir = '../../rois';
 densities = 0.05:0.05:0.8;
 histogram_density = 0.10;
 
+
+%% Compute correlation matrices
+disp('Computing correlations')
+
 % Get the time series data and ROI info previously created by
 % roi_extract.sh
 [schaefer,yeo,voxel,thomas] = get_time_series(out_dir);
@@ -59,6 +63,7 @@ end
 
 
 %% Modularity for schaefer x schaefer cortico-cortical network
+disp('Modularity')
 [Q,N] = modularity_schaefer( ...
     table2array(R_schaefer.R), ...
     R_schaefer.rowinfo.NetworkNum ...
@@ -72,10 +77,12 @@ writetable(result_modularity_schaefer,fullfile(out_dir,'modularity_schaefer.csv'
 
 
 %% PC, WMD for schaefer ROIs
+disp('Schaefer metrics')
 result_schaefer = compute_PC_WMD_schaefer(R_schaefer,densities);
 
 
 %% PC, WMD for the schaefer x thalamus matrices
+disp('Thalamus metrics')
 PCp_yeo = compute_PCs(Rp_schaefer_yeo,densities);
 PCp_thomas = compute_PCs(Rp_schaefer_thomas,densities);
 PCp_voxel = compute_PCs(Rp_schaefer_voxel,densities);
@@ -123,6 +130,8 @@ resultp_voxel = outerjoin( ...
 
 
 %% Results to image
+
+disp('Store to image')
 
 % Partial correlation
 results_to_image( ...
@@ -263,6 +272,7 @@ pc_schaefer = result_schaefer.roi_scaledPC(inds);
 wmd_schaefer = result_schaefer.roi_WMD(inds);
 
 inds = abs(resultp_voxel.density-histogram_density)<0.001;
+pc_voxel = resultp_voxel.roi_scaledPC(inds);
 wmd_voxel = resultp_voxel.roi_WMD(inds);
 
 subplot(1,2,1); hold on
