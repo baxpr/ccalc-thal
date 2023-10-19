@@ -44,9 +44,18 @@ for m = {
     writetable(mval.colinfo,colinfo_fname);
 end
 
+%% Modularity for schaefer x schaefer cortico-cortical network
+Q = modularity_schaefer( ...
+    table2array(R_schaefer.R), ...
+    R_schaefer.rowinfo.NetworkNum ...
+    );
 
-%% 
-% Compute PC at each density threshold for the Schaefer x Thalamus matrices
+
+%% PC, WMD for schaefer ROIs
+result_schaefer = compute_PC_WMD_schaefer(R_schaefer,densities);
+
+
+%% PC, WMD for the schaefer x thalamus matrices
 PCp_yeo = compute_PCs(Rp_schaefer_yeo,densities);
 PCp_thomas = compute_PCs(Rp_schaefer_thomas,densities);
 PCp_voxel = compute_PCs(Rp_schaefer_voxel,densities);
@@ -93,7 +102,7 @@ resultp_voxel = outerjoin( ...
     );
 
 
-%% Voxel results to image
+%% Results to image
 
 % Partial correlation
 results_to_image( ...
@@ -166,16 +175,7 @@ results_to_image( ...
     );
 
 
-%% Modularity for schaefer x schaefer cortico-cortical network
-Q = modularity_schaefer( ...
-    table2array(R_schaefer.R), ...
-    R_schaefer.rowinfo.NetworkNum ...
-    );
-
-
-%% Metrics for schaefer ROIs
-result_schaefer = compute_PC_WMD_schaefer(R_schaefer,densities);
-
+%% FIXME schaefer PC, WMD to image
 
 
 %% Summary plot for all ROIs
