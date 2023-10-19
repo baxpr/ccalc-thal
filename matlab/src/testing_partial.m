@@ -172,12 +172,10 @@ Q = modularity_schaefer( ...
     R_schaefer.rowinfo.NetworkNum ...
     );
 
+
 %% Metrics for schaefer ROIs
-result = compute_PC_WMD_schaefer(R_schaefer,densities);
+result_schaefer = compute_PC_WMD_schaefer(R_schaefer,densities);
 
-
-%%  FIXME
-%     Schaefer x schaefer PC, WMD
 
 
 %% Summary plot for all ROIs
@@ -220,4 +218,37 @@ for r = 1:size(all_density,1)
     set(gca,'XLim',xlim)
 
 end
+
+
+%% Histograms
+figure(2); clf
+
+dval = 0.1;
+
+inds = abs(result_schaefer.density-dval)<0.001;
+pc_schaefer = result_schaefer.roi_scaledPC(inds);
+wmd_schaefer = result_schaefer.roi_WMD(inds);
+
+inds = abs(resultp_voxel.density-dval)<0.001;
+wmd_voxel = resultp_voxel.roi_WMD(inds);
+
+subplot(1,2,1); hold on
+bins = 0:0.05:1 + 0.05/2;
+h_pc_schaefer = hist(pc_schaefer,bins);
+h_pc_voxel = hist(pc_voxel,bins);
+plot(bins,h_pc_schaefer/sum(h_pc_schaefer))
+plot(bins,h_pc_voxel/sum(h_pc_voxel))
+xlabel(sprintf('Scaled PC at density %0.2f',dval))
+ylabel('Fraction of ROIs')
+legend({'Cortex','Thalamus'},'Location','Best')
+
+subplot(1,2,2); hold on
+bins = -3:0.25:3 + 0.05/2;
+h_wmd_schaefer = hist(wmd_schaefer,bins);
+h_wmd_voxel = hist(wmd_voxel,bins);
+plot(bins,h_wmd_schaefer/sum(h_wmd_schaefer))
+plot(bins,h_wmd_voxel/sum(h_wmd_voxel))
+xlabel(sprintf('WMD at density %0.2f',dval))
+ylabel('Fraction of ROIs')
+legend({'Cortex','Thalamus'},'Location','Best')
 

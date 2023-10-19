@@ -1,4 +1,4 @@
-function P=participation_coef(W,Ci,flag)
+function [PCs,scaledPCs] = bct_participation_coef_nan(W,Ci,flag)
 %PARTICIPATION_COEF     Participation coefficient
 %
 %   P = participation_coef(W,Ci);
@@ -45,7 +45,12 @@ for i=1:max(Ci)
    Kc2=Kc2+(sum(W.*(Gc==i),2).^2);
 end
 
-P=ones(n,1)-Kc2./(Ko.^2);
+PCs = ones(n,1)-Kc2./(Ko.^2);
+
+% Scale by max possible value
+nnw = numel(unique(Ci));
+maxPC = 1 - (1/nnw)^2*nnw;
+scaledPCs = PCs ./ maxPC;
 
 % Removed this line to allow NaNs through when no connections
 %P(~Ko)=0;                           %P=0 if for nodes with no (out)neighbors
