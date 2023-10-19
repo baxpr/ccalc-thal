@@ -240,7 +240,7 @@ plot(bins,h_pc_schaefer/sum(h_pc_schaefer))
 plot(bins,h_pc_voxel/sum(h_pc_voxel))
 xlabel(sprintf('Scaled PC at density %0.2f',dval))
 ylabel('Fraction of ROIs')
-legend({'Cortex','Thalamus'},'Location','Best')
+legend({'Cortex (Schaefer)','Thalamus (Voxels)'},'Location','Best')
 
 subplot(1,2,2); hold on
 bins = -3:0.25:3 + 0.05/2;
@@ -250,5 +250,5 @@ plot(bins,h_wmd_schaefer/sum(h_wmd_schaefer))
 plot(bins,h_wmd_voxel/sum(h_wmd_voxel))
 xlabel(sprintf('WMD at density %0.2f',dval))
 ylabel('Fraction of ROIs')
-legend({'Cortex','Thalamus'},'Location','Best')
+legend({'Cortex (Schaefer)','Thalamus (Voxels)'},'Location','Best')
 
