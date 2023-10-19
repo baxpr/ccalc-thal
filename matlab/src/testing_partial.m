@@ -6,6 +6,7 @@
 out_dir = '../../OUTPUTS';
 roi_dir = '../../rois';
 densities = 0.05:0.05:0.8;
+histogram_density = 0.10;
 
 % Get the time series data and ROI info previously created by
 % roi_extract.sh
@@ -44,11 +45,30 @@ for m = {
     writetable(mval.colinfo,colinfo_fname);
 end
 
+
+%% Load matrices and info from file
+% Will be needed later for group analysis
+%tag = 'R_schaefer';
+%R_csv = fullfile(mat_dir,[tag '.csv']);
+%rowinfo_csv = fullfile(mat_dir,[tag '-rowinfo.csv']);
+%colinfo_csv = fullfile(mat_dir,[tag '-colinfo.csv']);
+%loadR = struct();
+%loadR.R = readtable(R_csv,'ReadRowNames',true);
+%loadR.rowinfo = readtable(rowinfo_csv);
+%loadR.colinfo = readtable(colinfo_csv);
+
+
 %% Modularity for schaefer x schaefer cortico-cortical network
-Q = modularity_schaefer( ...
+[Q,N] = modularity_schaefer( ...
     table2array(R_schaefer.R), ...
     R_schaefer.rowinfo.NetworkNum ...
     );
+result_modularity_schaefer = table();
+result_modularity_schaefer.ROI_Set{1,1} = 'schaefer';
+result_modularity_schaefer.Modularity(1,1) = Q;
+result_modularity_schaefer.NetworkSet{1,1} = 'yeo7';
+result_modularity_schaefer.NumNetworks(1,1) = N;
+writetable(result_modularity_schaefer,fullfile(out_dir,'modularity_schaefer.csv'));
 
 
 %% PC, WMD for schaefer ROIs
@@ -238,13 +258,11 @@ end
 %% Histograms
 figure(2); clf
 
-dval = 0.1;
-
-inds = abs(result_schaefer.density-dval)<0.001;
+inds = abs(result_schaefer.density-histogram_density)<0.001;
 pc_schaefer = result_schaefer.roi_scaledPC(inds);
 wmd_schaefer = result_schaefer.roi_WMD(inds);
 
-inds = abs(resultp_voxel.density-dval)<0.001;
+inds = abs(resultp_voxel.density-histogram_density)<0.001;
 wmd_voxel = resultp_voxel.roi_WMD(inds);
 
 subplot(1,2,1); hold on
@@ -253,7 +271,7 @@ h_pc_schaefer = hist(pc_schaefer,bins);
 h_pc_voxel = hist(pc_voxel,bins);
 plot(bins,h_pc_schaefer/sum(h_pc_schaefer))
 plot(bins,h_pc_voxel/sum(h_pc_voxel))
-xlabel(sprintf('Scaled PC at density %0.2f',dval))
+xlabel(sprintf('Scaled PC at density %0.2f',histogram_density))
 ylabel('Fraction of ROIs')
 legend({'Cortex (Schaefer)','Thalamus (Voxels)'},'Location','Best')
 
@@ -263,7 +281,7 @@ h_wmd_schaefer = hist(wmd_schaefer,bins);
 h_wmd_voxel = hist(wmd_voxel,bins);
 plot(bins,h_wmd_schaefer/sum(h_wmd_schaefer))
 plot(bins,h_wmd_voxel/sum(h_wmd_voxel))
-xlabel(sprintf('WMD at density %0.2f',dval))
+xlabel(sprintf('WMD at density %0.2f',histogram_density))
 ylabel('Fraction of ROIs')
 legend({'Cortex (Schaefer)','Thalamus (Voxels)'},'Location','Best')
 
