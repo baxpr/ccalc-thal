@@ -166,8 +166,18 @@ results_to_image( ...
     );
 
 
+%% Modularity for schaefer x schaefer cortico-cortical network
+Q = modularity_schaefer( ...
+    table2array(R_schaefer.R), ...
+    R_schaefer.rowinfo.NetworkNum ...
+    );
+
+%% Metrics for schaefer ROIs
+result = compute_PC_WMD_schaefer(R_schaefer,densities);
+
+
 %%  FIXME
-%     Schaefer x schaefer modularity, PC, WMD
+%     Schaefer x schaefer PC, WMD
 
 
 %% Summary plot for all ROIs
