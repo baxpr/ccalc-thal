@@ -31,7 +31,7 @@ for d = densities
         result.roi_PC(ct,1) = PC(k);
         result.roi_scaledPC(ct,1) = scaledPC(k);
         result.roi_WMD(ct,1) = WMD(k);
-        result.Region{ct,1} = Rschaefer.rowinfo.Network{k};
+        result.Region{ct,1} = Rschaefer.rowinfo.Region{k};
         result.ROI_Set{ct,1} = 'schaefer';
     end
 
