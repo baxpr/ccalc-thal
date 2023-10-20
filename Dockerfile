@@ -14,6 +14,7 @@ ENV MATLAB_RUNTIME=/usr/local/MATLAB/MATLAB_Runtime/v914
 # Copy the pipeline code. Matlab must be compiled before building. 
 COPY matlab /opt/ccalc-thal/matlab
 COPY src /opt/ccalc-thal/src
+COPY rois /opt/ccalc-thal/rois
 COPY README.md /opt/ccalc-thal
 
 # Add pipeline to system path
