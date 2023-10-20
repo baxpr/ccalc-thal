@@ -5,6 +5,11 @@ function entrypoint(varargin)
 %       and
 %    schaefer-thalamus partial correlation matrix
 
+% Quit if requested
+if strcmp(varargin{1},'quit')
+    exit
+end
+
 p = inputParser;
 addoptional(p,'out_dir','/OUTPUTS');
 addoptional(p,'roi_dir','/opt/ccalc-thal/rois');
@@ -340,3 +345,9 @@ for F = [3 4]
     saveas(F,figfile);
 
 end
+
+
+if isdeployed
+    exit
+end
+
