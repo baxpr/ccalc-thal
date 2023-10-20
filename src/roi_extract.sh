@@ -23,11 +23,11 @@ cd "${out_dir}"
 # Resample fMRI to THOMAS ROI space
 echo THOMAS resample
 flirt -usesqform -applyxfm \
-    -in fmri \
+    -in "${fmri_niigz}" \
     -ref "${thomas_left_dir}"/crop_t1 \
     -out fmri_thomas_left
 flirt -usesqform -applyxfm \
-    -in fmri \
+    -in "${fmri_niigz}" \
     -ref "${thomas_right_dir}"/crop_t1 \
     -out fmri_thomas_right
 
@@ -49,7 +49,7 @@ roi_img="${roi_dir}"/Schaefer2018/Schaefer2018_400Parcels_7Networks_order_FSLMNI
 # Resample fMRI to ROI space
 echo Schaefer resample
 flirt -usesqform -applyxfm \
-    -in wfmri \
+    -in "${wfmri_niigz}" \
     -ref "${roi_img}" \
     -out wfmri_schaefer
 
@@ -86,7 +86,7 @@ roi_img="${roi_dir}"/thalamus-mask/yeo7_thalamus_lr
 # Resample fMRI to ROI space
 echo Yeo resample
 flirt -usesqform -applyxfm \
-    -in wfmri \
+    -in "${wfmri_niigz}" \
     -ref "${roi_img}" \
     -out wfmri_yeo
 

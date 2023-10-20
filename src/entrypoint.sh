@@ -33,54 +33,17 @@ while [[ $# -gt 0 ]]; do
 done
 
 # Copy filtered fMRI images
-cp "${fmri_niigz}" "${out_dir}"/fmri.nii.gz
-cp "${wfmri_niigz}" "${out_dir}"/wfmri.nii.gz
+#cp "${fmri_niigz}" "${out_dir}"/fmri.nii.gz
+#cp "${wfmri_niigz}" "${out_dir}"/wfmri.nii.gz
 
 # ROI time series extraction
 roi_extract.sh
 
-# Unzip image files for SPM
-gunzip "${out_dir}"/*.nii.gz
+# Matlab part for network computations
+run_entrypoint.sh \
+    out_dir "${out_dir}" \
+    roi_dir "${roi_dir}" \
+    densities "${densities}" \
+    hist_density "${hist_density}"
 
-
-
-##############################################################
-# draft/previous below here
-
-exit 0
-
-# Most of the work is done in matlab
-run_spm12.sh ${MATLAB_RUNTIME} function conncalc \
-    t1_niigz "${t1_niigz}" \
-    mask_niigz "${mask_niigz}" \
-    roi_niigz "${roi_niigz}" \
-    roilabel_csv "${roilabel_csv}" \
-    removegm_niigz "${removegm_niigz}" \
-    keepgm_niigz "${keepgm_niigz}" \
-    meanfmri_niigz "${meanfmri_niigz}" \
-    roidefinv_niigz "${roidefinv_niigz}" \
-    connmaps_out "${connmaps_out}" \
-    label_info "${label_info}" \
-    fwhm "${fwhm}" \
-    out_dir "${out_dir}"
-
-
-# PDF creation and cleanup is done in bash
-. $FREESURFER_HOME/SetUpFreeSurfer.sh
-export XDG_RUNTIME_DIR=/tmp
-
-ss_roi.sh
-
-if [[ ${connmaps_out} == "yes" ]]; then
-    cd "${out_dir}"
-    ss_conn.sh
-    convert connmatrix.png page_fmri.png page_t1.png coreg.png page_conn*.png \
-        conncalc.pdf
-else
-    cd "${out_dir}"
-    convert connmatrix.png page_fmri.png page_t1.png coreg.png \
-        conncalc.pdf
-fi
-
-organize_outputs.sh
 
