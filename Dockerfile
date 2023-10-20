@@ -11,10 +11,6 @@ RUN wget -nv https://ssd.mathworks.com/supportfiles/downloads/R2023a/Release/5/d
 ENV MATLAB_SHELL=/bin/bash
 ENV MATLAB_RUNTIME=/usr/local/MATLAB/MATLAB_Runtime/v914
 
-# We need to make the ImageMagick security policy more permissive 
-# to be able to write PDFs.
-COPY ImageMagick-policy.xml /etc/ImageMagick-6/policy.xml
-
 # Copy the pipeline code. Matlab must be compiled before building. 
 COPY matlab /opt/ccalc-thal/matlab
 COPY src /opt/ccalc-thal/src
