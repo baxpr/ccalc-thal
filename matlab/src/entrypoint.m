@@ -1,12 +1,21 @@
+function entrypoint(varargin)
+
 %% Compute metrics from
 %    schaefer-schaefer pearson correlation matrix
 %       and
 %    schaefer-thalamus partial correlation matrix
 
-out_dir = '../../OUTPUTS';
-roi_dir = '../../rois';
-densities = 0.05:0.05:0.8;
-histogram_density = 0.10;
+p = inputParser;
+addoptional(p,'out_dir','/OUTPUTS');
+addoptional(p,'roi_dir','/opt/ccalc-thal/rois');
+addoptional(p,'densities','0.05:0.05:0.8');
+addoptional(p,'hist_density','0.10');
+parse(p);
+
+out_dir = p.Results.out_dir;
+roi_dir = p.Results.roi_dir;
+densities = eval(p.Results.densities);
+hist_density = eval(p.Results.hist_density);
 
 
 %% Compute correlation matrices
@@ -299,11 +308,11 @@ for F = [3 4]
         figfile = fullfile(out_dir,'hist_partial.png');
     end
 
-    inds = abs(result_schaefer.density-histogram_density)<0.001;
+    inds = abs(result_schaefer.density-hist_density)<0.001;
     pc_schaefer = result_schaefer.roi_scaledPC(inds);
     wmd_schaefer = result_schaefer.roi_WMD(inds);
 
-    inds = abs(result.density-histogram_density)<0.001;
+    inds = abs(result.density-hist_density)<0.001;
     pc_voxel = result.roi_scaledPC(inds);
     wmd_voxel = result.roi_WMD(inds);
 
@@ -313,7 +322,7 @@ for F = [3 4]
     h_pc_voxel = hist(pc_voxel,bins);
     plot(bins,h_pc_schaefer/sum(h_pc_schaefer))
     plot(bins,h_pc_voxel/sum(h_pc_voxel))
-    xlabel(sprintf('Scaled PC at density %0.2f',histogram_density))
+    xlabel(sprintf('Scaled PC at density %0.2f',hist_density))
     ylabel('Fraction of ROIs')
     legend({'Cortex (Schaefer)','Thalamus (Voxels)'},'Location','Best')
     title(thistitle)
@@ -324,7 +333,7 @@ for F = [3 4]
     h_wmd_voxel = hist(wmd_voxel,bins);
     plot(bins,h_wmd_schaefer/sum(h_wmd_schaefer))
     plot(bins,h_wmd_voxel/sum(h_wmd_voxel))
-    xlabel(sprintf('WMD at density %0.2f',histogram_density))
+    xlabel(sprintf('WMD at density %0.2f',hist_density))
     ylabel('Fraction of ROIs')
     legend({'Cortex (Schaefer)','Thalamus (Voxels)'},'Location','Best')
 

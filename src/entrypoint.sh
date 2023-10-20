@@ -10,6 +10,8 @@ export fmri_niigz=/INPUTS/filtered_removegm_noscrub_nadfmri.nii.gz
 export wfmri_niigz=/INPUTS/filtered_removegm_noscrub_wadfmri.nii.gz
 export label_info=
 export exclude_rois=
+export densities="0.05:0.05:0.8"
+export hist_density="0.10"
 export out_dir=/OUTPUTS
 
 # Parse input options
@@ -23,6 +25,8 @@ while [[ $# -gt 0 ]]; do
         --roi_dir)          export roi_dir="$2";          shift; shift ;;
         --label_info)       export label_info="$2";       shift; shift ;;
         --exclude_rois)     export exclude_rois="$2";     shift; shift ;;
+        --densities)        export densities="$2";        shift; shift ;;
+        --hist_density)     export hist_density="$2";     shift; shift ;;
         --out_dir)          export out_dir="$2";          shift; shift ;;
         *) echo "Input ${1} not recognized"; shift ;;
     esac
