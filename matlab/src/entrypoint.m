@@ -6,7 +6,7 @@ function entrypoint(varargin)
 %    schaefer-thalamus partial correlation matrix
 
 % Quit if requested
-if strcmp(varargin{1},'quit')
+if nargin==1 && strcmp(varargin{1},'quit')
     exit
 end
 
