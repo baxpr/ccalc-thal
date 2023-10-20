@@ -1,8 +1,7 @@
 FROM baxterprogers/fsl-base:v6.0.5.2
 
 # Install the MCR
-RUN wget -nv 
-https://ssd.mathworks.com/supportfiles/downloads/R2023a/Release/5/deployment_files/installer/complete/glnxa64/MATLAB_Runtime_R2023a_Update_5_glnxa64.zip \
+RUN wget -nv https://ssd.mathworks.com/supportfiles/downloads/R2023a/Release/5/deployment_files/installer/complete/glnxa64/MATLAB_Runtime_R2023a_Update_5_glnxa64.zip \
     -O /opt/mcr_installer.zip && \
     unzip /opt/mcr_installer.zip -d /opt/mcr_installer && \
     /opt/mcr_installer/install -mode silent -agreeToLicense yes && \
