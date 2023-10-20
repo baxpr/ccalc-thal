@@ -11,10 +11,10 @@ if nargin==1 && strcmp(varargin{1},'quit')
 end
 
 p = inputParser;
-addoptional(p,'out_dir','/OUTPUTS');
-addoptional(p,'roi_dir','/opt/ccalc-thal/rois');
-addoptional(p,'densities','0.05:0.05:0.8');
-addoptional(p,'hist_density','0.10');
+addOptional(p,'out_dir','/OUTPUTS');
+addOptional(p,'roi_dir','/opt/ccalc-thal/rois');
+addOptional(p,'densities','0.05:0.05:0.8');
+addOptional(p,'hist_density','0.10');
 parse(p);
 
 out_dir = p.Results.out_dir;
