@@ -20,7 +20,7 @@ COPY README.md /opt/ccalc-thal
 ENV PATH=/opt/ccalc-thal/src:/opt/ccalc-thal/matlab/bin:${PATH}
 
 # Matlab executable must be run at build to extract the CTF archive
-RUN run_entrypoint.sh ${MATLAB_RUNTIME} quit
+RUN bash -c run_entrypoint.sh ${MATLAB_RUNTIME} quit
 
 # Entrypoint
 ENTRYPOINT ["xwrapper.sh","entrypoint.sh"]
