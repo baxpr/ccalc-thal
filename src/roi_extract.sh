@@ -24,17 +24,17 @@ cd "${out_dir}"
 echo THOMAS resample
 flirt -usesqform -applyxfm \
     -in fmri \
-    -ref "${thomas_left}"/crop_t1 \
+    -ref "${thomas_left_dir}"/crop_t1 \
     -out fmri_thomas_left
 flirt -usesqform -applyxfm \
     -in fmri \
-    -ref "${thomas_right}"/crop_t1 \
+    -ref "${thomas_right_dir}"/crop_t1 \
     -out fmri_thomas_right
 
 # Extract signals
 echo THOMAS extract
-fslmeants -i fmri_thomas_left -o thomas_left.txt --label="${thomas_left}"/thomas
-fslmeants -i fmri_thomas_right -o thomas_right.txt --label="${thomas_right}"/thomasr
+fslmeants -i fmri_thomas_left -o thomas_left.txt --label="${thomas_left_dir}"/thomas
+fslmeants -i fmri_thomas_right -o thomas_right.txt --label="${thomas_right_dir}"/thomasr
 
 # Convert to CSV and label appropriately
 echo THOMAS reformat

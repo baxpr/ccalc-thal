@@ -1,6 +1,5 @@
 *
 !src
-!bin
-!build
+!matlab
 !README.md
 !ImageMagick-policy.xml
