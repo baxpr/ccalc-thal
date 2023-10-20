@@ -1,4 +1,4 @@
-#!usr/bin/env bash
+#!/usr/bin/env bash
 
 docker run \
     --mount type=bind,src=$(pwd -P)/INPUTS,dst=/INPUTS \
