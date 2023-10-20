@@ -1,1 +1,3 @@
 Path	Symbol	Reason
+home/rogersbp/repo/ccalc-thal/matlab/src/external/BCT/2017_01_15_BCT/mleme_constraint_model.m	mean2	mcc_flag
+home/rogersbp/repo/ccalc-thal/matlab/src/external/BCT/2017_01_15_BCT/mleme_constraint_model.m	fsolve	mcc_flag
