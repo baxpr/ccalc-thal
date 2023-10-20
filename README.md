@@ -10,6 +10,18 @@
 - Yeo7 thalamus
 
 
+## Inputs
+
+        --fmri_niigz
+        --wfmri_niigz
+        --thomas_left_dir
+        --thomas_right_dir
+        --roi_dir
+        --label_info
+        --exclude_rois
+        --out_dir
+  
+
 ## Outputs
 
 All are R and Z.

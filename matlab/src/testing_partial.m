@@ -34,12 +34,12 @@ R_schaefer_thomas = get_partial_matrix_2(schaefer,thomas,inf);
 mat_dir = fullfile(out_dir,'matrices');
 if ~exist(mat_dir,'dir'), mkdir(mat_dir); end
 for m = {
-    'R_schaefer'
-    'R_schaefer_yeo'
-    'R_schaefer_thomas'
-    'Rp_schaefer_yeo'
-    'Rp_schaefer_thomas'
-    }'
+        'R_schaefer'
+        'R_schaefer_yeo'
+        'R_schaefer_thomas'
+        'Rp_schaefer_yeo'
+        'Rp_schaefer_thomas'
+        }'
     eval(['mval = ' m{1} ';']);  % Hack to use var name AND value
     mat_fname = fullfile(mat_dir,[m{1} '.csv']);
     rowinfo_fname = fullfile(mat_dir,[m{1} '-rowinfo.csv']);
@@ -222,76 +222,112 @@ results_to_image( ...
     );
 
 
-%% Summary plot for all ROIs
-result = resultp_yeo;
-all_density = [];
-all_degree = [];
-all_scaledPC = [];
-all_WMD = [];
-for r = unique(result.Region)'
-    d = result(strcmp(result.Region,r{1}),:);
-    d = sortrows(d,'density');
-    all_density(end+1,:) = d.density';
-    all_degree(end+1,:) = d.roi_degree';
-    all_scaledPC(end+1,:) = d.roi_scaledPC';
-    all_WMD(end+1,:) = d.roi_WMD';
-end
+%% Summary plots for all ROIs
+for F = [1 2]
 
-figure(1); clf
-xlim = [min(densities)-0.05 max(densities)+0.05];
+    figure(F); clf
+    set(gcf,'Position',[100 100 1200 300]);
 
-for r = 1:size(all_density,1)
-    
-    subplot(1,3,1); hold on
-    plot(all_density(r,:),all_degree(r,:),'-')
-    xlabel('Density')
-    ylabel('ROI Degree')
-    set(gca,'XLim',xlim)
+    if F==1
+        result = result_yeo;
+        thistitle = sprintf('%s ROI set, bivariate corr',result.ROI_Set{1});
+        figfile = fullfile(out_dir,'yeo7_bivariate.png');
 
-    subplot(1,3,2); hold on
-    plot(all_density(r,:),all_scaledPC(r,:),'-')
-    xlabel('Density')
-    ylabel('ROI scaledPC')
-    title(sprintf('%s ROI set',result.ROI_Set{1}))
-    set(gca,'XLim',xlim)
+    elseif F==2
+        result = resultp_yeo;
+        thistitle = sprintf('%s ROI set, partial corr',result.ROI_Set{1});
+        figfile = fullfile(out_dir,'yeo7_partial.png');
+    end
 
-    subplot(1,3,3); hold on
-    plot(all_density(r,:),all_WMD(r,:),'-')
-    xlabel('Density')
-    ylabel('ROI WMD')
-    set(gca,'XLim',xlim)
+    all_density = [];
+    all_degree = [];
+    all_scaledPC = [];
+    all_WMD = [];
+    for r = unique(result.Region)'
+        d = result(strcmp(result.Region,r{1}),:);
+        d = sortrows(d,'density');
+        all_density(end+1,:) = d.density';
+        all_degree(end+1,:) = d.roi_degree';
+        all_scaledPC(end+1,:) = d.roi_scaledPC';
+        all_WMD(end+1,:) = d.roi_WMD';
+    end
+
+    xlim = [min(densities)-0.05 max(densities)+0.05];
+
+    for r = 1:size(all_density,1)
+
+        subplot(1,3,1); hold on
+        plot(all_density(r,:),all_degree(r,:),'-')
+        xlabel('Density')
+        ylabel('ROI Degree')
+        set(gca,'XLim',xlim)
+
+        subplot(1,3,2); hold on
+        plot(all_density(r,:),all_scaledPC(r,:),'-')
+        xlabel('Density')
+        ylabel('ROI scaledPC')
+        title(thistitle)
+        set(gca,'XLim',xlim)
+
+        subplot(1,3,3); hold on
+        plot(all_density(r,:),all_WMD(r,:),'-')
+        xlabel('Density')
+        ylabel('ROI WMD')
+        set(gca,'XLim',xlim)
+
+    end
+
+    saveas(F,figfile);
 
 end
 
 
 %% Histograms
-figure(2); clf
+for F = [3 4]
 
-inds = abs(result_schaefer.density-histogram_density)<0.001;
-pc_schaefer = result_schaefer.roi_scaledPC(inds);
-wmd_schaefer = result_schaefer.roi_WMD(inds);
+    figure(F); clf
+    set(gcf,'Position',[100 100 900 300]);
 
-inds = abs(resultp_voxel.density-histogram_density)<0.001;
-pc_voxel = resultp_voxel.roi_scaledPC(inds);
-wmd_voxel = resultp_voxel.roi_WMD(inds);
+    if F==3
+        result = result_voxel;
+        thistitle = sprintf('Histograms, bivariate corr');
+        figfile = fullfile(out_dir,'hist_bivariate.png');
 
-subplot(1,2,1); hold on
-bins = 0:0.05:1 + 0.05/2;
-h_pc_schaefer = hist(pc_schaefer,bins);
-h_pc_voxel = hist(pc_voxel,bins);
-plot(bins,h_pc_schaefer/sum(h_pc_schaefer))
-plot(bins,h_pc_voxel/sum(h_pc_voxel))
-xlabel(sprintf('Scaled PC at density %0.2f',histogram_density))
-ylabel('Fraction of ROIs')
-legend({'Cortex (Schaefer)','Thalamus (Voxels)'},'Location','Best')
+    elseif F==4
+        result = resultp_voxel;
+        thistitle = sprintf('Histograms, partial corr');
+        figfile = fullfile(out_dir,'hist_partial.png');
+    end
 
-subplot(1,2,2); hold on
-bins = -3:0.25:3 + 0.05/2;
-h_wmd_schaefer = hist(wmd_schaefer,bins);
-h_wmd_voxel = hist(wmd_voxel,bins);
-plot(bins,h_wmd_schaefer/sum(h_wmd_schaefer))
-plot(bins,h_wmd_voxel/sum(h_wmd_voxel))
-xlabel(sprintf('WMD at density %0.2f',histogram_density))
-ylabel('Fraction of ROIs')
-legend({'Cortex (Schaefer)','Thalamus (Voxels)'},'Location','Best')
+    inds = abs(result_schaefer.density-histogram_density)<0.001;
+    pc_schaefer = result_schaefer.roi_scaledPC(inds);
+    wmd_schaefer = result_schaefer.roi_WMD(inds);
 
+    inds = abs(result.density-histogram_density)<0.001;
+    pc_voxel = result.roi_scaledPC(inds);
+    wmd_voxel = result.roi_WMD(inds);
+
+    subplot(1,2,1); hold on
+    bins = 0:0.05:1 + 0.05/2;
+    h_pc_schaefer = hist(pc_schaefer,bins);
+    h_pc_voxel = hist(pc_voxel,bins);
+    plot(bins,h_pc_schaefer/sum(h_pc_schaefer))
+    plot(bins,h_pc_voxel/sum(h_pc_voxel))
+    xlabel(sprintf('Scaled PC at density %0.2f',histogram_density))
+    ylabel('Fraction of ROIs')
+    legend({'Cortex (Schaefer)','Thalamus (Voxels)'},'Location','Best')
+    title(thistitle)
+
+    subplot(1,2,2); hold on
+    bins = -3:0.25:3 + 0.05/2;
+    h_wmd_schaefer = hist(wmd_schaefer,bins);
+    h_wmd_voxel = hist(wmd_voxel,bins);
+    plot(bins,h_wmd_schaefer/sum(h_wmd_schaefer))
+    plot(bins,h_wmd_voxel/sum(h_wmd_voxel))
+    xlabel(sprintf('WMD at density %0.2f',histogram_density))
+    ylabel('Fraction of ROIs')
+    legend({'Cortex (Schaefer)','Thalamus (Voxels)'},'Location','Best')
+
+    saveas(F,figfile);
+
+end
