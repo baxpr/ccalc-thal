@@ -9,7 +9,7 @@ RUN wget -nv https://ssd.mathworks.com/supportfiles/downloads/R2023a/Release/5/d
 
 # Matlab env
 ENV MATLAB_SHELL=/bin/bash
-ENV MATLAB_RUNTIME=/usr/local/MATLAB/MATLAB_Runtime/v914
+ENV MATLAB_RUNTIME=/usr/local/MATLAB/MATLAB_Runtime/R2023a
 
 # Copy the pipeline code. Matlab must be compiled before building. 
 COPY matlab /opt/ccalc-thal/matlab
